@@ -78,6 +78,33 @@ public function login(Request $request)
         ]);
     }
 
+    public function profile(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'name' => $user->name,
+            'email' => $user->email,
+            'balance' => $user->balance,
+        ]);
+    }
+
+public function addBalance(Request $request)
+{
+    $request->validate([
+        'amount' => 'required|numeric|min:0.01'
+    ]);
+
+    $user = $request->user();
+    $user->balance += $request->amount;
+    $user->save();
+
+    return response()->json([
+        'message' => 'Saldo adicionado com sucesso!',
+        'balance' => $user->balance
+    ]);
+}
+
     /**
      * Show the form for creating a new resource.
      */

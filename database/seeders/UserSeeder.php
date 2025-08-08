@@ -18,10 +18,11 @@ class UserSeeder extends Seeder
     {
             User::create([
             //'id' => Str::uuid("v4"),    
-            'name' => "Artur",
-            'email' => "Artur@apibrasil.com",
+            'name' => "Caua",
+            'email' => "caua@apibrasil.com",
+            'cellphone' => '11111111111',
             'password' => Hash::make('Teste'),
-            'balance' => 999999
+            'balance' => 999998
         ]);
     }
 }

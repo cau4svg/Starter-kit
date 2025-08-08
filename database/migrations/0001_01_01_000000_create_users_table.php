@@ -23,7 +23,7 @@ return new class extends Migration
             $table->uuid('id')->primary();
             $table->string('name');
             $table->string('email')->unique();
-            $table->string('cellphone')->nullable();
+            $table->string('cellphone');
             $table->string('password');
             $table->double('balance',10,2);
             $table->timestamps();
