@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class UsersController extends Controller
@@ -14,7 +15,7 @@ class UsersController extends Controller
         return User::all();
     }
 
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -53,7 +54,36 @@ class UsersController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+
+            $user = User::findOrFail($id);
+
+            if ($request->has('is_admin') && !auth()->user()->is_admin) {
+                return response()->json(['error' => 'Apenas administradores podem alterar o campo is_admin'], 403);
+            }
+
+            $data = $request->only(['name', 'email', 'cellphone', 'password', 'bearer_apibrasil']);
+
+            // Se veio senha, criptografa
+            if (!empty($data['password'])) {
+                $data['password'] = bcrypt($data['password']);
+            } else {
+                unset($data['password']);
+            }
+
+            $user->update($data);
+            $user->refresh();
+
+            return response()->json([
+                'message' => 'Usuário atualizado com sucesso',
+                'user' => $user->makeHidden(['password'])
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'message' => 'Error ao  atualizar úsuario',
+                'error' => $th->getMessage()
+            ]);
+        }
     }
 
     /**

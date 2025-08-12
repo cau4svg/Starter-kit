@@ -12,63 +12,38 @@ class AuthController extends Controller
      * Display a listing of the resource.
      */
 
-    public function index()
-    {
+    public function index() {}
 
-    }
-
-public function login(Request $request)
+    public function login(Request $request)
 
     {
-
-
-
         try {
-
-
-
             $credentials = $request->validate([
 
-                "email" => "required|email", 
+                "email" => "required|email",
 
-                "password"=>"required"
-
+                "password" => "required"
             ]);
 
-
-
             $user = User::where("email", $credentials["email"])->first();
-
-
 
             if (! $user || ! Hash::check($credentials['password'], $user->password)) {
 
                 return response()->json(['message' => 'Credenciais inválidas'], 401);
-
             }
 
-
-
             $token = $user->createToken('api')->plainTextToken;
-
-
 
             // lógica de autenticação aqui
 
             return response()->json(["error" => false, "user" => $user, "token" => $token]);
-
- 
-
         } catch (\Throwable $th) {
 
-            return response()->json(["error"=>true, "message" => $th->getMessage()]);
+            return response()->json(["error" => true, "message" => $th->getMessage()]);
+        }
+    }
 
-  }
-
-
-}
-
-        public function logout(Request $request)
+    public function logout(Request $request)
     {
         // Apaga o token atual
         $request->user()->currentAccessToken()->delete();
@@ -82,28 +57,20 @@ public function login(Request $request)
     {
         $user = $request->user();
 
+        if (!$user) {
+            return response()->json([
+                'message' => 'Usuário não autenticado'
+            ], 401);
+        }
+
         return response()->json([
-            'name' => $user->name,
-            'email' => $user->email,
-            'balance' => $user->balance,
+            'name'       => $user->name,
+            'email'      => $user->email,
+            'cellphone'  => $user->cellphone,
+            'balance'    => $user->balance,
         ]);
     }
 
-public function addBalance(Request $request)
-{
-    $request->validate([
-        'amount' => 'required|numeric|min:0.01'
-    ]);
-
-    $user = $request->user();
-    $user->balance += $request->amount;
-    $user->save();
-
-    return response()->json([
-        'message' => 'Saldo adicionado com sucesso!',
-        'balance' => $user->balance
-    ]);
-}
 
     /**
      * Show the form for creating a new resource.

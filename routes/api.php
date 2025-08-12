@@ -3,14 +3,25 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RequestsController;
+use App\Http\Controllers\UsersController;
+use App\Http\Controllers\TransactionsController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::middleware('auth:sanctum')->post('/add-balance', [AuthController::class, 'addBalance']);
-Route::middleware('auth:sanctum')->get('/profile', [AuthController::class, 'profile']);
-Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
+Route::middleware('auth:sanctum')->put('/users/{id}', [UsersController::class, 'update']);
 
-?>
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::middleware('auth:sanctum')->get('/transactions', [TransactionsController::class,'index']);
+    Route::post('/add-balance', [TransactionsController::class, 'addBalance']);
+    Route::get('/profile', [AuthController::class, 'profile']);
+    Route::post('/logout', [AuthController::class, 'logout']);
+    
+    Route::any('/consult/{name}', [RequestsController::class, 'default'])->name('request_default');
+    Route::post('/whatsapp/sendText', [RequestsController::class, 'sendText']);
+
+});

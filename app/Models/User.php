@@ -2,18 +2,49 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Support\Str;
+use App\Models\Transactions;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Database\Eloquent\Concerns\HasUuids;
-use Illuminate\Database\Eloquent\Model;
 
 class User extends Model
 {
+    public function transactions()
+    {
+        return $this->hasMany(Transactions::class);
+    }
+
+    public function transaction(string $type, float $amount)
+    {
+        if (!in_array($type, ['credit', 'debit'])) {
+            throw new \InvalidArgumentException("Tipo de transação inválido: $type");
+        }
+
+        // Cria a transação
+        $transaction = $this->transactions()->create([
+            'type' => $type,
+            'amount' => $amount
+        ]);
+
+        // Atualiza o saldo
+        if ($type === 'credit') {
+            $this->balance += $amount;
+        } elseif ($type === 'debit') {
+            $this->balance -= $amount;
+        }
+
+        $this->save();
+
+        return $transaction;
+    }
+
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable,HasUuids;
+    use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
     /**
      * The attributes that are mass assignable.
@@ -25,8 +56,10 @@ class User extends Model
         'email',
         'password',
         'cellphone',
-        'balance',
+        'bearer_apibrasil',
+        'is_admin'
     ];
+
 
     /**
      * The attributes that should be hidden for serialization.
@@ -48,19 +81,30 @@ class User extends Model
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin' => 'boolean',
         ];
     }
-    
-    
+
+
     //TESTE
     protected static function boot()
-{
-    parent::boot();
+    {
+        parent::boot();
 
-    static::creating(function ($model) {
-        if (empty($model->id)) {
-            $model->id = (string) Str::uuid();
-        }
-    });
-}
+        static::creating(function ($model) {
+            if (empty($model->id)) {
+                $model->id = (string) Str::uuid();
+            }
+        });
+
+        parent::boot();
+
+        static::creating(function ($user) {
+            if (User::count() === 0) {
+                $user->is_admin = true; // Primeiro usuário
+            } else {
+                $user->is_admin = false; // Todos os outros
+            }
+        });
+    }
 }
