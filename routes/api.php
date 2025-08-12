@@ -14,13 +14,16 @@ Route::get('/user', function (Request $request) {
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->put('/users/{id}', [UsersController::class, 'update']);
 
+//agrupamento de middleware que so deixa usuario realizar ações após o login
 Route::middleware('auth:sanctum')->group(function () {
 
+    //rotas de autenticação
     Route::middleware('auth:sanctum')->get('/transactions', [TransactionsController::class,'index']);
     Route::post('/add-balance', [TransactionsController::class, 'addBalance']);
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
     
+    //rotas de consultas
     Route::any('/consult/{name}', [RequestsController::class, 'default'])->name('request_default');
     Route::post('/whatsapp/sendText', [RequestsController::class, 'sendText']);
 

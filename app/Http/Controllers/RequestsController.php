@@ -3,30 +3,29 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Services\WhatsAppService;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
 class RequestsController extends Controller
-{   
-    protected $whatsAppService;
+{
     protected $default_api;
 
     public function __construct()
     {
-        $this->default_api = "https://gateway.apibrasil.io/api/v2/";
+        $this->default_api = 'https://gateway.apibrasil.io/api/v2/';
     }
 
     public function default(Request $request, $name)
     {
         try {
+            // Se for WhatsApp, chama direto o sendText()
+            if ($name === 'whatsapp') {
+                return $this->sendText($request);
+            }
 
             $urlRequest = $this->getTypeResquest($name);
-
             $data = $request->all();
-            $response = $this->defaultRequest($urlRequest, $data);
 
-            return $response;
+            return $this->defaultRequest($urlRequest, $data);
         } catch (\Throwable $th) {
             return response()->json(["error" => true, "message" => $th->getMessage()]);
         }
@@ -35,12 +34,9 @@ class RequestsController extends Controller
     public function defaultRequest(String $urlRequest, array $data)
     {
         try {
+            $bearerAPIBrasil = Auth::user()->bearer_apibrasil ?? env('APIBRASIL_BEARER');
 
-            $bearerAPIBrasil = Auth::user()->bearer_apibrasil;
-
-            // Usando cURL para fazer a requisição
             $curl = curl_init();
-
             curl_setopt_array($curl, [
                 CURLOPT_URL => $urlRequest,
                 CURLOPT_RETURNTRANSFER => true,
@@ -58,15 +54,18 @@ class RequestsController extends Controller
                 CURLOPT_POSTFIELDS => json_encode($data)
             ]);
 
-            curl_setopt($curl, CURLOPT_RETURNTRANSFER, true); // garante que o retorno seja string
-
             $response = curl_exec($curl);
+            $error = curl_error($curl);
             curl_close($curl);
 
-            // Se deu erro no cURL
-            $callback = json_decode($response);
+            if ($error) {
+                return response()->json([
+                    "message" => "Erro cURL",
+                    "error" => $error
+                ], 500);
+            }
 
-            // Se não conseguir decodificar
+            $callback = json_decode($response);
             if (!$callback) {
                 return response()->json([
                     "message" => "Erro ao decodificar resposta da APIBrasil",
@@ -74,35 +73,7 @@ class RequestsController extends Controller
                 ], 500);
             }
 
-            // Verifica se a APIBrasil retornou erro
-            if (!isset($callback->error) || $callback->error === true) {
-                return response()->json([
-                    "message" => $callback->message ?? "Erro retornado pela APIBrasil",
-                    "data" => $callback
-                ], 400);
-            }
-
-            // Se deu tudo certo, retorna os dados
-            return response()->json([
-                "message" => "Consulta realizada com sucesso!",
-                "data" => $callback
-            ]);
-
-            // Decodifica o JSON
-            $callback = json_decode($response);
-
-            if (!$callback || !isset($callback->response)) {
-                return response()->json([
-                    "message" => "Erro ao obter resposta da APIBrasil",
-                    "data" => $response
-                ], 500);
-            }
-
             return response()->json($callback);
-            return response()->json([
-                "message"  => "Consulta realizada com sucesso!",
-                "response" => json_decode($callback->response)
-            ]);
         } catch (\Throwable $th) {
             return response()->json(["error" => true, "message" => $th->getMessage()]);
         }
@@ -110,47 +81,64 @@ class RequestsController extends Controller
 
     public function getTypeResquest($name)
     {
-        try {
-
-            switch ($name) {
-                case 'cpf': //case para consulta de cpf
-                    return "{$this->default_api}/dados/cpf/credits";
-                case 'vehicles': // Novo case para consulta base 001
-                    return "{$this->default_api}vehicles/base/001/consulta";
-                case 'vehicles-dados': // Novo case para consulta base 000
-                    return "{$this->default_api}vehicles/base/000/dados";
-                case 'sms': // Novo case para SMS
-                    return "{$this->default_api}sms/send/credits";
-                case 'cnpj': // Novo case para CNPJ
-                    return "{$this->default_api}dados/cnpj/credits";
-                case 'whatsapp': //case whatspp consulta send text
-                    return "{$this->default_api}whatsapp/sendText";
-            }
-        } catch (\Throwable $th) {
-            return response()->json(["error" => true, "message" => $th->getMessage()]);
+        switch ($name) {
+            case 'cpf':
+                return "{$this->default_api}dados/cpf/credits";
+            case 'vehicles':
+                return "{$this->default_api}vehicles/base/001/consulta";
+            case 'vehicles-dados':
+                return "{$this->default_api}vehicles/base/000/dados";
+            case 'sms':
+                return "{$this->default_api}sms/send/credits";
+            case 'cnpj':
+                return "{$this->default_api}dados/cnpj/credits";
+            case 'whatsapp':
+                return "{$this->default_api}whatsapp/sendText";
         }
     }
 
-    
-
-    public function __construct(WhatsAppService $whatsAppService)
+    public function sendText(Request $request)
     {
-        $this->whatsAppService = $whatsAppService;
-    }
-
-    public function sendMessage(Request $request)
-    {
-        $request->validate([
-            'user_id'  => 'required|exists:users,id',
-            'mensagem' => 'required|string'
+        $bearerAPIBrasil = Auth::user()->bearer_apibrasil ?? env('APIBRASIL_BEARER');
+        
+        $payload = json_encode([
+            'number' => $request->input('number'),
+            'text' => $request->input('text'),
+            'time_typing' => $request->input('time_typing', 1000)
         ]);
 
-        $resultado = $this->whatsAppService->sendText(
-            $request->input('user_id'),
-            $request->input('mensagem')
-        );
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $this->default_api . 'whatsapp/sendText',
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_ENCODING => '',
+            CURLOPT_MAXREDIRS => 10,
+            CURLOPT_TIMEOUT => 0,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+            CURLOPT_CUSTOMREQUEST => 'POST',
+            CURLOPT_POSTFIELDS => $payload,
+            CURLOPT_HTTPHEADER => [
+                'DeviceToken: ' . env('APIBRASIL_DEVICE_TOKEN'),
+                "Content-Type: application/json",
+                "Authorization: Bearer {$bearerAPIBrasil}",
+            ],
+        ]);
 
-        return response()->json($resultado);
+        $response = curl_exec($ch);
+        $error = curl_error($ch);
+        curl_close($ch);
+
+        if ($error) {
+            return response()->json([
+                'success' => false,
+                'error' => $error
+            ], 500);
+        }
+
+        return response()->json([
+            'success' => true,
+            'api_response' => json_decode($response, true)
+        ]);
     }
 }
-
