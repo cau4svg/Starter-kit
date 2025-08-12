@@ -23,11 +23,4 @@ class AppServiceProvider extends ServiceProvider
     {
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
     }
-
-    public function sendText($mensagem)
-    {
-        // Aqui vai sua lógica para enviar mensagem
-        // Exemplo: chamar API do WhatsApp
-        return "Mensagem enviada: " . $mensagem;
-    }
 }
