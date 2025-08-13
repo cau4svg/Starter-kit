@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->uuid("id")->primary();
-             $table->double('ammount',10,2);
+             $table->double('amount',10,2);
              $table->enum('type',["credit","debit"]);
              $table->foreignUuid('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();

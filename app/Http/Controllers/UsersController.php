@@ -62,7 +62,7 @@ class UsersController extends Controller
                 return response()->json(['error' => 'Apenas administradores podem alterar o campo is_admin'], 403);
             }
 
-            $data = $request->only(['name', 'email', 'cellphone', 'password', 'bearer_apibrasil']);
+            $data = $request->only(['name', 'email', 'password', 'bearer_apibrasil','cellphone']);
 
             // Se veio senha, criptografa
             if (!empty($data['password'])) {
