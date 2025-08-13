@@ -21,26 +21,39 @@ class RequestsController extends Controller
             $urlRequest = $this->getTypeResquest($name);
 
             $data = $request->all();
-            return $this->defaultRequest($urlRequest, $data);
+            $headers = $request->header();
+
+            return $this->defaultRequest($urlRequest, $headers, $data);
         } catch (\Throwable $th) {
             return response()->json(["error" => true, "message" => $th->getMessage()]);
         }
     }
 
-    public function defaultRequest(String $urlRequest, array $data)
+    public function defaultRequest(String $urlRequest, array $header, array $data)
     {
         try {
-            $bearerAPIBrasil = Auth::user()->bearer_apibrasil ?? env('APIBRASIL_BEARER');
+            
+            $bearerAPIBrasil = Auth::user()->bearer_apibrasil;
+            $devicetoken = Auth::user()->device_token;
 
             // Cabeçalhos padrão
             $headers = [
                 "Content-Type: application/json",
-                "Authorization: Bearer {$bearerAPIBrasil}"
+                "Authorization: Bearer {$bearerAPIBrasil}",
             ];
 
-            // Se for WhatsApp, inclui DeviceToken
-            if (strpos($urlRequest, 'whatsapp') !== false) {
-                $headers[] = 'DeviceToken: ' . env('APIBRASIL_DEVICE_TOKEN');
+            if(isset($header['devicetoken'][0])){
+
+                $devicetoken = $header['devicetoken'][0];
+
+                // Se for WhatsApp Wpp ou Baileys, inclui DeviceToken
+                if (strpos($urlRequest, 'whatsapp') !== false) {
+                    $headers[] = 'DeviceToken: ' . $devicetoken;
+                }
+                if (strpos($urlRequest, '/evolution/message') !== false) {
+                    $headers[] = 'DeviceToken: ' . $devicetoken;
+                }
+           
             }
 
             $curl = curl_init();
@@ -107,9 +120,9 @@ class RequestsController extends Controller
             $endpoint = str_replace('whatsapp-', '', $name);
             return "{$this->default_api}whatsapp/{$endpoint}";
         }
-        // Evolution (Baileys)
-        if (strpos($name, 'evolution-') === 0) {
-            $endpoint = str_replace('evolution-', '', $name);
+        //Whatsapp Baileys
+        if (strpos($name, 'evolution/message') === 0) {
+            $endpoint = str_replace('evolution/message/', '', $name);
             return "{$this->default_api}evolution/message/{$endpoint}";
         }
         // Se não reconhecer, assume que já veio a URL completa

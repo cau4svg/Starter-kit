@@ -14,11 +14,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Model
 {
-    public function transactions()
-    {
-        return $this->hasMany(Transactions::class);
-    }
-
+ 
+    
     public function transaction(string $type, float $amount)
     {
         if (!in_array($type, ['credit', 'debit'])) {

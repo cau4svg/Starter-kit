@@ -32,8 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
         return app(RequestsController::class)->default($request, $name);
     });
 
-    Route::post('/evolution/{action}', function (Request $request, $action) {
-        $name = 'evolution-' . $action;
+    Route::post('/evolution/message/{action}', function (Request $request, $action) {
+        $name = 'evolution/message/' . $action;
         return app(RequestsController::class)->default($request, $name);
     });
 });
