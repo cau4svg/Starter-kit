@@ -7,14 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Transactions extends Model
 {
-    protected $fillable = [
+     protected $fillable = [
         'amount',
         'type',
         'user_id',
-
     ];
 
-    protected static function boot()
+        protected static function boot()
     {
         parent::boot();
 

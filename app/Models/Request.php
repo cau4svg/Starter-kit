@@ -3,9 +3,12 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 
 class Request extends Model
 {
+    use HasUuids;
+
     protected $fillable = [
         'type',
         'ip',
@@ -13,7 +16,7 @@ class Request extends Model
         'request',
         'response',
         'status',
-        'ammount',
+        'amount',
         'price_id',
         'user_id',
     ];
