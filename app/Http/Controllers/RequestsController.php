@@ -100,16 +100,19 @@ class RequestsController extends Controller
                 return "{$this->default_api}sms/send/credits";
             case 'cnpj':
                 return "{$this->default_api}dados/cnpj/credits";
-            }
-                // Se começar com 'whatsapp-'
-                if (strpos($name, 'whatsapp-') === 0) {
-                    // Remove o prefixo e adiciona na URL
-                    $endpoint = str_replace('whatsapp-', '', $name);
-                    return "{$this->default_api}whatsapp/{$endpoint}";
-                }
-
-                // Se não reconhecer, assume que já veio a URL completa
-                return $name;
         }
+        // Se começar com 'whatsapp-'
+        if (strpos($name, 'whatsapp-') === 0) {
+            // Remove o prefixo e adiciona na URL
+            $endpoint = str_replace('whatsapp-', '', $name);
+            return "{$this->default_api}whatsapp/{$endpoint}";
+        }
+        // Evolution (Baileys)
+        if (strpos($name, 'evolution-') === 0) {
+            $endpoint = str_replace('evolution-', '', $name);
+            return "{$this->default_api}evolution/message/{$endpoint}";
+        }
+        // Se não reconhecer, assume que já veio a URL completa
+        return $name;
     }
-
+}
