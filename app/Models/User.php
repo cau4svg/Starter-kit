@@ -2,9 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Support\Str;
-use App\Models\Transactions;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
@@ -14,35 +13,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Model
 {
-    public function transactions()
-    {
-        return $this->hasMany(Transactions::class);
-    }
-
-    public function transaction(string $type, float $amount)
-    {
-        if (!in_array($type, ['credit', 'debit'])) {
-            throw new \InvalidArgumentException("Tipo de transação inválido: $type");
-        }
-
-        // Cria a transação
-        $transaction = $this->transactions()->create([
-            'type' => $type,
-            'amount' => $amount
-        ]);
-
-        // Atualiza o saldo
-        if ($type === 'credit') {
-            $this->balance += $amount;
-        } elseif ($type === 'debit') {
-            $this->balance -= $amount;
-        }
-
-        $this->save();
-
-        return $transaction;
-    }
-
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasUuids;
 
@@ -56,16 +26,17 @@ class User extends Model
         'email',
         'password',
         'cellphone',
+        'balance',
         'bearer_apibrasil',
         'is_admin'
+
     ];
 
+    public function transactions()
+    {
+        return $this->hasMany(Transactions::class);
+    }
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
@@ -81,10 +52,35 @@ class User extends Model
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
-            'is_admin' => 'boolean',
+            'is_admin' => 'boolean'
         ];
     }
 
+    //transaction type credit, debit
+    public function transaction(string $type, float $amount)
+
+    {
+
+        if (!in_array($type, ['credit', 'debit'])) {
+
+            throw new \InvalidArgumentException("Tipo de transação inválido: $type");
+        }
+        // Cria a transação
+        $transaction = $this->transactions()->create([
+            'type' => $type,
+            'amount' => $amount
+        ]);
+        // Atualiza o saldo
+        if ($type === 'credit') {
+
+            $this->balance += $amount;
+        } elseif ($type === 'debit') {
+
+            $this->balance -= $amount;
+        }
+        $this->save();
+        return $transaction;
+    }
 
     //TESTE
     protected static function boot()
@@ -96,14 +92,15 @@ class User extends Model
                 $model->id = (string) Str::uuid();
             }
         });
+    }
 
-        parent::boot();
-
+    protected static function booted()
+    {
         static::creating(function ($user) {
             if (User::count() === 0) {
-                $user->is_admin = true; // Primeiro usuário
+                $user->is_admin = true;
             } else {
-                $user->is_admin = false; // Todos os outros
+                $user->is_admin = false;
             }
         });
     }

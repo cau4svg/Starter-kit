@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Transactions;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
@@ -17,22 +18,28 @@ class AuthController extends Controller
     public function login(Request $request)
 
     {
-        try {
-            $credentials = $request->validate([
 
+        try {
+
+            $credentials = $request->validate([
                 "email" => "required|email",
 
                 "password" => "required"
             ]);
-
             $user = User::where("email", $credentials["email"])->first();
+
+
 
             if (! $user || ! Hash::check($credentials['password'], $user->password)) {
 
                 return response()->json(['message' => 'Credenciais inválidas'], 401);
             }
 
+
+
             $token = $user->createToken('api')->plainTextToken;
+
+
 
             // lógica de autenticação aqui
 
@@ -45,13 +52,18 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        // Apaga o token atual
-        $request->user()->currentAccessToken()->delete();
+        $user = $request->user();
+
+        // Garante que há usuário autenticado e token ativo
+        if ($user && $user->currentAccessToken()) {
+            $user->currentAccessToken()->delete();
+        }
 
         return response()->json([
             'message' => 'Logout realizado com sucesso'
         ]);
     }
+
 
     public function profile(Request $request)
     {
@@ -70,6 +82,7 @@ class AuthController extends Controller
             'balance'    => $user->balance,
         ]);
     }
+
 
 
     /**

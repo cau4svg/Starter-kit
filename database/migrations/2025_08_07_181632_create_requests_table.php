@@ -16,8 +16,8 @@ return new class extends Migration
              $table->string("ip");
              $table->enum('type',["post","get"]);
              $table->string("endpoint");
-             $table->string("request");
-             $table->string("response");
+             $table->longText("request");
+             $table->longText("response");
              $table->string("status");
              $table->double("ammount",10,2);
              $table->foreignUuid('price_id')->nullable()->constrained('prices')->onDelete('cascade');
