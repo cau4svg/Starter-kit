@@ -11,6 +11,7 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+//rota de login, que puxa usuario pelo id
 Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->put('/users/{id}', [UsersController::class, 'update']);
 
@@ -18,13 +19,16 @@ Route::middleware('auth:sanctum')->put('/users/{id}', [UsersController::class, '
 Route::middleware('auth:sanctum')->group(function () {
 
     //rotas de autenticação
-    Route::middleware('auth:sanctum')->get('/transactions', [TransactionsController::class,'index']);
+    Route::middleware('auth:sanctum')->get('/transactions', [TransactionsController::class, 'index']);
     Route::post('/add-balance', [TransactionsController::class, 'addBalance']);
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    
+
     //rotas de consultas
     Route::any('/consult/{name}', [RequestsController::class, 'default'])->name('request_default');
-    Route::post('/whatsapp/sendText', [RequestsController::class, 'sendText']);
-
+    Route::post('/whatsapp/{action}', function(Request $request, $action) {
+    // Monta o nome no formato que o getTypeResquest espera
+    $name = 'whatsapp-' . $action;
+    return app(RequestsController::class)->default($request, $name);
+    });
 });

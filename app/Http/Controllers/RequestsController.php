@@ -9,6 +9,7 @@ class RequestsController extends Controller
 {
     protected $default_api;
 
+    //uRL "padrão" da apibrasil
     public function __construct()
     {
         $this->default_api = 'https://gateway.apibrasil.io/api/v2/';
@@ -17,14 +18,9 @@ class RequestsController extends Controller
     public function default(Request $request, $name)
     {
         try {
-            // Se for WhatsApp, chama direto o sendText()
-            if ($name === 'whatsapp') {
-                return $this->sendText($request);
-            }
-
             $urlRequest = $this->getTypeResquest($name);
-            $data = $request->all();
 
+            $data = $request->all();
             return $this->defaultRequest($urlRequest, $data);
         } catch (\Throwable $th) {
             return response()->json(["error" => true, "message" => $th->getMessage()]);
@@ -35,6 +31,17 @@ class RequestsController extends Controller
     {
         try {
             $bearerAPIBrasil = Auth::user()->bearer_apibrasil ?? env('APIBRASIL_BEARER');
+
+            // Cabeçalhos padrão
+            $headers = [
+                "Content-Type: application/json",
+                "Authorization: Bearer {$bearerAPIBrasil}"
+            ];
+
+            // Se for WhatsApp, inclui DeviceToken
+            if (strpos($urlRequest, 'whatsapp') !== false) {
+                $headers[] = 'DeviceToken: ' . env('APIBRASIL_DEVICE_TOKEN');
+            }
 
             $curl = curl_init();
             curl_setopt_array($curl, [
@@ -47,10 +54,7 @@ class RequestsController extends Controller
                 CURLOPT_TIMEOUT => 120,
                 CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                 CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_HTTPHEADER => [
-                    "Content-Type: application/json",
-                    "Authorization: Bearer {$bearerAPIBrasil}"
-                ],
+                CURLOPT_HTTPHEADER => $headers,
                 CURLOPT_POSTFIELDS => json_encode($data)
             ]);
 
@@ -65,7 +69,7 @@ class RequestsController extends Controller
                 ], 500);
             }
 
-            $callback = json_decode($response);
+            $callback = json_decode($response, true);
             if (!$callback) {
                 return response()->json([
                     "message" => "Erro ao decodificar resposta da APIBrasil",
@@ -73,12 +77,16 @@ class RequestsController extends Controller
                 ], 500);
             }
 
-            return response()->json($callback);
+            return response()->json([
+                'success' => true,
+                'api_response' => $callback
+            ]);
         } catch (\Throwable $th) {
             return response()->json(["error" => true, "message" => $th->getMessage()]);
         }
     }
 
+    //getTypeRequest para realizar as consultas 
     public function getTypeResquest($name)
     {
         switch ($name) {
@@ -92,53 +100,16 @@ class RequestsController extends Controller
                 return "{$this->default_api}sms/send/credits";
             case 'cnpj':
                 return "{$this->default_api}dados/cnpj/credits";
-            case 'whatsapp':
-                return "{$this->default_api}whatsapp/sendText";
+            }
+                // Se começar com 'whatsapp-'
+                if (strpos($name, 'whatsapp-') === 0) {
+                    // Remove o prefixo e adiciona na URL
+                    $endpoint = str_replace('whatsapp-', '', $name);
+                    return "{$this->default_api}whatsapp/{$endpoint}";
+                }
+
+                // Se não reconhecer, assume que já veio a URL completa
+                return $name;
         }
     }
 
-    public function sendText(Request $request)
-    {
-        $bearerAPIBrasil = Auth::user()->bearer_apibrasil ?? env('APIBRASIL_BEARER');
-        
-        $payload = json_encode([
-            'number' => $request->input('number'),
-            'text' => $request->input('text'),
-            'time_typing' => $request->input('time_typing', 1000)
-        ]);
-
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $this->default_api . 'whatsapp/sendText',
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => '',
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 0,
-            CURLOPT_FOLLOWLOCATION => true,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => 'POST',
-            CURLOPT_POSTFIELDS => $payload,
-            CURLOPT_HTTPHEADER => [
-                'DeviceToken: ' . env('APIBRASIL_DEVICE_TOKEN'),
-                "Content-Type: application/json",
-                "Authorization: Bearer {$bearerAPIBrasil}",
-            ],
-        ]);
-
-        $response = curl_exec($ch);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        if ($error) {
-            return response()->json([
-                'success' => false,
-                'error' => $error
-            ], 500);
-        }
-
-        return response()->json([
-            'success' => true,
-            'api_response' => json_decode($response, true)
-        ]);
-    }
-}
