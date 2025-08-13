@@ -33,18 +33,41 @@ class RequestsController extends Controller
 
             $urlRequest = $this->getTypeResquest($name);
             $data = $request->all();
+            $headers = $request->header();
 
-            return $this->defaultRequest($urlRequest, $data);
+            return $this->defaultRequest($urlRequest, $headers, $data);
         } catch (\Throwable $th) {
             return response()->json(["error" => true, "message" => $th->getMessage()]);
         }
     }
 
-    public function defaultRequest(String $urlRequest, array $data, $serviceName = null)
+    public function defaultRequest(String $urlRequest, array $headers, array $data, $serviceName = null)
     {
         try {
 
             $user = User::findOrFail(Auth::user()->id);
+
+            $bearerAPIBrasil = $user->bearer_apibrasil;
+            $devicetoken = $user->device_token;
+
+
+            // Se vier DeviceToken no header da requisição
+            $requestToken = request()->header('DeviceToken');
+            if (!empty($requestToken)) {
+                $devicetoken = $requestToken;
+            }
+
+            // Cabeçalhos padrão
+            $headers = [
+                "Content-Type: application/json",
+                "Authorization: Bearer {$bearerAPIBrasil}",
+            ];
+
+            // Se a URL for relacionada ao WhatsApp ou Evolution Message
+            if (strpos($urlRequest, 'whatsapp') !== false || strpos($urlRequest, '/evolution/message') !== false) {
+                $headers[] = 'DeviceToken: ' . $devicetoken;
+            }
+
 
             // Se não vier o nome do serviço, tenta descobrir pela URL
             if (!$serviceName) {
@@ -57,7 +80,6 @@ class RequestsController extends Controller
                     }
                 }
             }
-
 
 
             $price = Prices::where('name', $serviceName)->first();
@@ -78,7 +100,7 @@ class RequestsController extends Controller
                 ], 403);
             }
 
-            return DB::transaction(function () use ($urlRequest, $data, $user, $price) {
+            return DB::transaction(function () use ($urlRequest, $data, $user, $price, $headers) {
 
                 // Faz a requisição cURL
                 $bearerAPIBrasil = $user->bearer_apibrasil;
@@ -94,20 +116,30 @@ class RequestsController extends Controller
                     CURLOPT_TIMEOUT => 120,
                     CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
                     CURLOPT_CUSTOMREQUEST => "POST",
-                    CURLOPT_HTTPHEADER => [
-                        "Content-Type: application/json",
-                        "Authorization: Bearer {$bearerAPIBrasil}"
-                    ],
+                    CURLOPT_HTTPHEADER => $headers,
                     CURLOPT_POSTFIELDS => json_encode($data)
                 ]);
 
+
+
                 $response = curl_exec($curl);
+                $error = curl_error($curl);
                 curl_close($curl);
 
-                $callback = json_decode($response);
+                if ($error) {
+                    return response()->json([
+                        "message" => "Erro cURL",
+                        "error" => $error
+                    ], 500);
+                }
 
+
+                $callback = json_decode($response, true);
                 if (!$callback) {
-                    throw new \Exception("Erro ao decodificar resposta da APIBrasil");
+                    return response()->json([
+                        "message" => "Erro ao decodificar resposta da APIBrasil",
+                        "raw" => $response
+                    ], 500);
                 }
 
                 if (isset($callback->error) && $callback->error === true) {
@@ -126,7 +158,7 @@ class RequestsController extends Controller
                     'price_id' => $price->id, // <--- UUID
                     'user_id'   => $user->id,
                 ]);
-                
+
                 // Debita saldo se houver price
                 $transaction = $user->transaction('debit', $price->value_sell);
 
