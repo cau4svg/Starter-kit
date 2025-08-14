@@ -28,7 +28,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::any('/consult/{name}', [RequestsController::class, 'default'])->name('request_default');
     Route::post('/whatsapp/{action}', function(Request $request, $action) {
     // Monta o nome no formato que o getTypeResquest espera
-    $name = 'whatsapp-' . $action;
+    $name = 'whatsapp/' . $action;
     return app(RequestsController::class)->default($request, $name);
     });
 });
