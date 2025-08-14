@@ -59,7 +59,7 @@ class RequestsController extends Controller
             ];
 
             // Se a URL for relacionada ao WhatsApp ou Evolution Message
-            if (strpos($urlRequest, 'whatsapp') !== false || strpos($urlRequest, '/evolution/message') !== false) {
+            if (strpos($urlRequest, 'whatsapp/') !== false || strpos($urlRequest, '/evolution/message') !== false) {
                 $headers[] = 'DeviceToken: ' . $devicetoken;
             }
 
