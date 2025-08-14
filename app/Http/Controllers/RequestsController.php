@@ -112,4 +112,3 @@ class RequestsController extends Controller
                 return $name;
         }
     }
-
