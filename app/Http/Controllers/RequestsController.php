@@ -16,38 +16,41 @@ class RequestsController extends Controller
 {
     protected $default_api;
 
-    //uRL "padrão" da apibrasil
+    // Construtor da classe: define a URL base da API Brasil
     public function __construct()
     {
         $this->default_api = 'https://gateway.apibrasil.io/api/v2/';
     }
 
+    // Função "default" - chamada genérica para qualquer serviço
+    // Recebe o nome do serviço ($name) e os dados da request e repassa para defaultRequest
     public function default(Request $request, $name)
     {
         try {
-            $urlRequest = $this->getTypeResquest($name);
+            $urlRequest = $this->getTypeResquest($name); // obtém a URL do serviço a partir do nome informado
 
-            $data = $request->all();
-            $headers = $request->header();
+            $data = $request->all();       // captura todos os dados enviados na request
+            $headers = $request->header(); // captura todos os headers enviados
 
-            // Passa $name diretamente como serviceName
+            // Repassa para a função central de requisições
             return $this->defaultRequest($urlRequest, $headers, $data, $name);
         } catch (\Throwable $th) {
             return response()->json(["error" => true, "message" => $th->getMessage()]);
         }
     }
 
+    // Função central de envio de requisições para a API Brasil
     public function defaultRequest(String $urlRequest, array $headers, array $data, $serviceName = null)
     {
         try {
-
+            // Recupera usuário autenticado
             $user = User::findOrFail(Auth::user()->id);
 
-            $bearerAPIBrasil = $user->bearer_apibrasil;
-            $devicetoken = $user->device_token;
+            $bearerAPIBrasil = $user->bearer_apibrasil; // token da API Brasil salvo no usuário
+            $devicetoken = $user->device_token;         // device token salvo no usuário
 
+            // Define headers básicos da requisição
 
-            // Cabeçalhos padrão
             $headers = [
                 "Content-Type: application/json",
                 "Authorization: Bearer {$bearerAPIBrasil}",
@@ -55,7 +58,7 @@ class RequestsController extends Controller
             // --- capturar e normalizar o DeviceToken recebido ---
             $devicetoken = request()->header('DeviceToken');   // string|array|null
 
-            // Se vier como array (pode acontecer), pegue o primeiro
+           // Se vier como array (pode acontecer), pegue o primeiro
             if (is_array($devicetoken)) {
                 $devicetoken = $devicetoken[0] ?? null;
             }
@@ -67,16 +70,17 @@ class RequestsController extends Controller
             if ($devicetoken) {
                 $headers[] = 'DeviceToken: ' . $devicetoken;
             }
+            $devicetoken = $devicetoken ? trim($devicetoken) : null;
 
             // Se a URL for relacionada ao WhatsApp ou Evolution Message
             if (strpos($urlRequest, 'whatsapp/') !== false || strpos($urlRequest, '/evolution/message') !== false) {
+
                 $headers[] = 'DeviceToken: ' . $devicetoken;
             }
 
-            // Se não vier o nome do serviço, tenta descobrir pela URL
+            // Se o nome do serviço não foi informado, tenta deduzir pela URL
             if (!$serviceName) {
-                $names = Prices::pluck('name')->toArray(); // ["cpf", "cnpj", "consulta", "sendAudio"]
-
+                $names = Prices::pluck('name')->toArray();
                 foreach ($names as $name) {
                     if (stripos($urlRequest, $name) !== false) {
                         $serviceName = $name;
@@ -122,7 +126,7 @@ class RequestsController extends Controller
                 ], 404);
             }
 
-            // verifica saldo
+            // Verifica se o usuário possui saldo suficiente
             if ($user->balance < $price->value_buy) {
                 return response()->json([
                     "error" => true,
@@ -130,11 +134,12 @@ class RequestsController extends Controller
                 ], 403);
             }
 
+            // Inicia transação no banco de dados
             return DB::transaction(function () use ($urlRequest, $data, $user, $price, $headers) {
 
                 // Faz a requisição cURL
                 $bearerAPIBrasil = $user->bearer_apibrasil;
-                // dd($headers);
+                
                 $curl = curl_init();
                 curl_setopt_array($curl, [
                     CURLOPT_URL => $urlRequest,
@@ -149,12 +154,12 @@ class RequestsController extends Controller
                     CURLOPT_HTTPHEADER => $headers,
                     CURLOPT_POSTFIELDS => json_encode($data)
                 ]);
-                // dd($urlRequest);
-
-                $response = curl_exec($curl);
+              
+                $response = curl_exec($curl); // executa requisição
                 $error = curl_error($curl);
                 curl_close($curl);
 
+                // Caso ocorra erro no cURL
                 if ($error) {
                     return response()->json([
                         "message" => "Erro cURL",
@@ -162,20 +167,21 @@ class RequestsController extends Controller
                     ], 500);
                 }
 
-
+                // Decodifica resposta da API
                 $callback = json_decode($response, true);
-                if (!$callback) {
+                if (!is_array($callback)) {
                     return response()->json([
                         "message" => "Erro ao decodificar resposta da APIBrasil",
                         "raw" => $response
                     ], 500);
                 }
 
-                if (isset($callback->error) && $callback->error === true) {
-                    throw new \Exception($callback->message ?? "Erro retornado pela APIBrasil");
+                // Caso a API retorne erro direto
+                if (isset($callback['error']) && $callback['error'] === true) {
+                    throw new \Exception($callback['message'] ?? "Erro retornado pela APIBrasil");
                 }
-                // dd($price->value_sell);
-                // Salva request no banco
+
+                // Registra a request no banco (histórico)
                 ApiRequest::create([
                     'type'      => request()->method(),
                     'ip'        => request()->ip(),
@@ -183,15 +189,15 @@ class RequestsController extends Controller
                     'request'   => json_encode($data),
                     'response'  => json_encode($callback),
                     'status'    => 200,
-                    'amount' => $price->value_sell,
-                    'price_id' => $price->id, // <--- UUID
+                    'amount'    => $price->value_sell,
+                    'price_id'  => $price->id,
                     'user_id'   => $user->id,
                 ]);
 
-
-                // Debita saldo se houver price
+                // Debita saldo do usuário
                 $transaction = $user->transaction('debit', $price->value_sell);
 
+                // Retorna resposta final para o cliente
                 return response()->json([
                     "message" => "Consulta realizada com sucesso!",
                     "taxa" => $price->value_sell,
@@ -208,6 +214,7 @@ class RequestsController extends Controller
         }
     }
 
+    // Função para mapear o nome de um serviço ($name) para a URL correspondente da API Brasil
     public function getTypeResquest($name)
     {
         $serviceName = $name;
@@ -244,9 +251,34 @@ class RequestsController extends Controller
                 $endpoint = str_replace('cep/', '', $name);
                 return "{$this->default_api}cep/{$endpoint}";
 
+            case $name === 'rastreio':
+                $url = "{$this->default_api}correios/rastreio";
+                break;
+
+            case $name === 'translate':
+                $url = "{$this->default_api}translate";
+                break;
+
+            case $name === 'fipe':
+                $url = "{$this->default_api}vehicles/fipe";
+                break;
+
+            case $name === 'ip':
+                $url = "{$this->default_api}database/ip";
+                break;
+
+            // Serviços com prefixo dinâmico (weather, whatsapp, geolocation)
+            case strpos($name, 'weather/') === 0:
+                $endpoint = str_replace('weather/', '', $name);
+                return "{$this->default_api}weather/{$endpoint}";
+
             case strpos($name, 'whatsapp/') === 0:
                 $endpoint = str_replace('whatsapp/', '', $name);
                 return "{$this->default_api}whatsapp/{$endpoint}";
+
+            case strpos($name, 'geolocation/') === 0:
+                $endpoint = substr($name, strlen('geolocation/'));
+                return "{$this->default_api}geolocation/{$endpoint}";
 
             case strpos($name, 'geomatrix/') === 0:
                 $endpoint = str_replace('geomatrix/', '', $name);
@@ -265,11 +297,65 @@ class RequestsController extends Controller
                 return "{$this->default_api}database/{$endpoint}";
 
             default:
-                // Aqui você evita retornar null
                 throw new \Exception("Serviço '{$name}' não reconhecido em getTypeResquest");
+        }
+
+        // Normaliza nomes de serviços específicos para bater com o banco de preços
+        if (strpos($serviceName, 'whatsapp/') === 0) {
+            $serviceName = substr($serviceName, strlen('whatsapp/'));
+        }
+        if (strpos($serviceName, 'evolution/message/') === 0) {
+            $serviceName = substr($serviceName, strlen('evolution/message/'));
+        }
+        if (strpos($serviceName, 'geolocation/') === 0) {
+            $serviceName = 'geolocation/';
+        }
+        if (strpos($serviceName, 'weather/') === 0) {
+            $serviceName = 'weather/';
         }
 
 
         return $url;
+    }
+
+    // Serviço específico: FIPE (veículos)
+    public function placaFipe(Request $request)
+    {
+        return $this->defaultRequest(
+            'https://gateway.apibrasil.io/api/v2/vehicles/fipe',
+            [],
+            $request->all(),
+            'vehicles.fipe'
+        );
+    }
+
+    // Serviço específico: consulta IP em banco de dados
+    public function ipDatabase(Request $request)
+    {
+        $request->validate([
+            'ip' => ['required', 'ip'], // valida se o IP foi enviado corretamente
+        ]);
+
+        // Monta URL com query param aceito pela API Brasil
+        $url = 'https://gateway.apibrasil.io/api/v2/database/ip?ip=' . $request->ip;
+
+        // Repassa para função central, mas com body vazio
+        return $this->defaultRequest(
+            $url,
+            ['Content-Type' => 'application/json'],
+            [],
+            'ip'
+        );
+    }
+
+    // Serviço específico: tradução de textos
+    public function translate(Request $request)
+    {
+        return $this->defaultRequest(
+            'https://gateway.apibrasil.io/api/v2/translate',
+            ['Content-Type' => 'application/json'],
+            $request->all(),
+            'translate'
+        );
     }
 }

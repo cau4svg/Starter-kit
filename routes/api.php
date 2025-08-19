@@ -26,8 +26,33 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::apiResource('prices', PricesController::class);
 
+    //rota Placa Fipe 
+    Route::post('/vehicles/fipe', [RequestsController::class, 'placaFipe']);
+
     //rotas de consultas
     Route::any('/consult/{name}', [RequestsController::class, 'default'])->name('request_default');
+
+    //rota de whatsapp wpp e baileys
+    Route::post('/whatsapp/{action}', function (Request $request, $action) {
+        $name = 'whatsapp/' . $action;
+        return app(RequestsController::class)->default($request, $name);
+    });
+
+    //rota de rastreio
+    Route::post('correios/{name}', [RequestsController::class, 'default']);
+    //rota de geolocation
+    Route::post('/geolocation/{action}', function (Request $request, $action) {
+        $name = 'geolocation/' . $action;
+        return app(RequestsController::class)->default($request, $name);
+    });
+    
+    //rota de clima
+    Route::post('/weather/{action}', function (Request $request, $action) {
+        $name = 'weather/' . $action;        // ex.: weather/city, weather/forecast
+        return app(RequestsController::class)->default($request, $name);
+    });
+    
+
     Route::any('/cep/{action?}', function (Request $request, $action = null) {
         $name = $action ? 'cep/' . trim($action, '/') : 'cep';
         return app(RequestsController::class)->default($request, $name);
@@ -39,10 +64,6 @@ Route::middleware('auth:sanctum')->group(function () {
         $name = $action ? 'translate/' . trim($action, '/') : 'translate';
         return app(RequestsController::class)->default($request, $name);
     })->where('action', '.*');
-    Route::post('/whatsapp/{action}', function (Request $request, $action) {
-        // Monta o nome no formato que o getTypeResquest espera
-        $name = 'whatsapp/' . $action;
-        return app(RequestsController::class)->default($request, $name);
     });
     Route::any('/ddd/{action?}', function (Request $request, $action = null) {
         $name = $action ? 'ddd/' . trim($action, '/') : 'ddd';
@@ -52,4 +73,5 @@ Route::middleware('auth:sanctum')->group(function () {
         $name = $action ? 'database/' . trim($action, '/') : 'database';
         return app(RequestsController::class)->default($request, $name);
     })->where('action', '.*');
+
 });
