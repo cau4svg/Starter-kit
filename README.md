@@ -21,6 +21,16 @@ Com este projeto, você terá:
 3. Chame os endpoints desejados.
 4. Para encerrar a sessão, use `/api/logout`.
 
+## Docker
+
+Este projeto inclui arquivos de configuração do Docker para simplificar o desenvolvimento local.
+
+```
+docker-compose up -d
+```
+
+O comando acima iniciará a aplicação juntamente com os serviços de banco de dados MySQL e Redis.
+
 ## Licença
 
 Este projeto segue a licença MIT.
