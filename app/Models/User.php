@@ -57,7 +57,8 @@ class User extends Model
         'password',
         'cellphone',
         'bearer_apibrasil',
-        'is_admin'
+        'is_admin',
+        'balance', 
     ];
 
 

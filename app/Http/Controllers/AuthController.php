@@ -14,6 +14,50 @@ class AuthController extends Controller
 
     public function index() {}
 
+    public function register(Request $request)
+    {
+        $request->validate([
+            'name'      => 'required|string|max:255',
+            'email'     => 'required|string|email|max:255|unique:users',
+            'cellphone' => 'required|string|max:20|unique:users',
+            'password'  => 'required|string|min:6',
+        ]);
+
+        // regra: apenas admins podem criar novos admins
+        $isAdmin = false; // padrão
+
+        if ($request->has('is_admin') && $request->is_admin) {
+            if ($request->user() && $request->user()->is_admin) {
+                // se quem está logado é admin, pode criar admin
+                $isAdmin = true;
+            } else {
+                // bloqueia caso não seja admin
+                return response()->json([
+                    'message' => 'Apenas administradores podem criar novos administradores.'
+                ], 403);
+            }
+        }
+
+        $user = User::create([
+            'name'      => $request->name,
+            'email'     => $request->email,
+            'cellphone' => $request->cellphone,
+            'password'  => bcrypt($request->password),
+            'is_admin'  => $request->is_admin ?? false,
+            'bearer_apibrasil' => $request->bearer_apibrasil ?? null,
+            'balance'   => 0 //sempre comeca com 0
+        ]);
+
+        // gera token automático após cadastro
+        $token = $user->createToken('auth_token')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Usuário cadastrado com sucesso',
+            'user'    => $user,
+            'token'   => $token,
+        ], 201);
+    }
+
     public function login(Request $request)
 
     {
