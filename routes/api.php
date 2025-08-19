@@ -3,8 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\PricesController;
+use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\TransactionsController;
 
 Route::get('/user', function (Request $request) {
@@ -23,12 +24,38 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/add-balance', [TransactionsController::class, 'addBalance']);
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::apiResource('prices', PricesController::class);
+
+    //rota Placa Fipe 
+    Route::post('/vehicles/fipe', [RequestsController::class, 'placaFipe']);
+
+    //rota de ip database
+    Route::post('/database/ip', [RequestsController::class, 'ipDatabase']);
+
+    //rota de translate
+    Route::post('/translate', [RequestsController::class, 'translate']);
 
     //rotas de consultas
     Route::any('/consult/{name}', [RequestsController::class, 'default'])->name('request_default');
-    Route::post('/whatsapp/{action}', function(Request $request, $action) {
-    // Monta o nome no formato que o getTypeResquest espera
-    $name = 'whatsapp/' . $action;
-    return app(RequestsController::class)->default($request, $name);
+
+    //rota de whatsapp wpp e baileys
+    Route::post('/whatsapp/{action}', function (Request $request, $action) {
+        $name = 'whatsapp/' . $action;
+        return app(RequestsController::class)->default($request, $name);
     });
+
+    //rota de rastreio
+    Route::post('correios/{name}', [RequestsController::class, 'default']);
+    //rota de geolocation
+    Route::post('/geolocation/{action}', function (Request $request, $action) {
+        $name = 'geolocation/' . $action;
+        return app(RequestsController::class)->default($request, $name);
+    });
+    
+    //rota de clima
+    Route::post('/weather/{action}', function (Request $request, $action) {
+        $name = 'weather/' . $action;        // ex.: weather/city, weather/forecast
+        return app(RequestsController::class)->default($request, $name);
+    });
+    
 });
