@@ -28,9 +28,28 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //rotas de consultas
     Route::any('/consult/{name}', [RequestsController::class, 'default'])->name('request_default');
-    Route::post('/whatsapp/{action}', function(Request $request, $action) {
-    // Monta o nome no formato que o getTypeResquest espera
-    $name = 'whatsapp/' . $action;
-    return app(RequestsController::class)->default($request, $name);
+    Route::any('/cep/{action?}', function (Request $request, $action = null) {
+        $name = $action ? 'cep/' . trim($action, '/') : 'cep';
+        return app(RequestsController::class)->default($request, $name);
+    })->where('action', '.*');
+    Route::post('/geomatrix', function (Request $request) {
+        return app(RequestsController::class)->default($request, 'geomatrix/distance');
     });
+    Route::any('/translate/{action?}', function (Request $request, $action = null) {
+        $name = $action ? 'translate/' . trim($action, '/') : 'translate';
+        return app(RequestsController::class)->default($request, $name);
+    })->where('action', '.*');
+    Route::post('/whatsapp/{action}', function (Request $request, $action) {
+        // Monta o nome no formato que o getTypeResquest espera
+        $name = 'whatsapp/' . $action;
+        return app(RequestsController::class)->default($request, $name);
+    });
+    Route::any('/ddd/{action?}', function (Request $request, $action = null) {
+        $name = $action ? 'ddd/' . trim($action, '/') : 'ddd';
+        return app(RequestsController::class)->default($request, $name);
+    })->where('action', '.*');
+    Route::any('/database/{action?}', function (Request $request, $action = null) {
+        $name = $action ? 'database/' . trim($action, '/') : 'database';
+        return app(RequestsController::class)->default($request, $name);
+    })->where('action', '.*');
 });
