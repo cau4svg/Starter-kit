@@ -8,6 +8,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Request as ApiRequest; // evita conflito com Illuminate\Http\Request
 
@@ -49,19 +50,31 @@ class RequestsController extends Controller
             $devicetoken = $user->device_token;         // device token salvo no usuário
 
             // Define headers básicos da requisição
+
             $headers = [
                 "Content-Type: application/json",
                 "Authorization: Bearer {$bearerAPIBrasil}",
             ];
+            // --- capturar e normalizar o DeviceToken recebido ---
+            $devicetoken = request()->header('DeviceToken');   // string|array|null
 
-            // Captura e normaliza o DeviceToken enviado no header da request
-            $devicetoken = request()->header('DeviceToken');
+           // Se vier como array (pode acontecer), pegue o primeiro
             if (is_array($devicetoken)) {
                 $devicetoken = $devicetoken[0] ?? null;
             }
+
+            // Normaliza
             $devicetoken = $devicetoken ? trim($devicetoken) : null;
 
+            // Se existir, adiciona no header de saída
             if ($devicetoken) {
+                $headers[] = 'DeviceToken: ' . $devicetoken;
+            }
+            $devicetoken = $devicetoken ? trim($devicetoken) : null;
+
+            // Se a URL for relacionada ao WhatsApp ou Evolution Message
+            if (strpos($urlRequest, 'whatsapp/') !== false || strpos($urlRequest, '/evolution/message') !== false) {
+
                 $headers[] = 'DeviceToken: ' . $devicetoken;
             }
 
@@ -76,8 +89,35 @@ class RequestsController extends Controller
                 }
             }
 
-            // Busca preço do serviço na tabela de preços
+            // Normaliza para bater com o banco
+            if (strpos($serviceName, 'whatsapp/') === 0) {
+                $serviceName = substr($serviceName, strlen('whatsapp/'));
+            }
+            if (strpos($serviceName, 'evolution/message/') === 0) {
+                $serviceName = substr($serviceName, strlen('evolution/message/'));
+            }
+            if ($serviceName === 'cep' || strpos($serviceName, 'cep/') === 0) {
+                $serviceName = 'cep';
+            }
+
+            if ($serviceName === 'geomatrix' || strpos($serviceName, 'geomatrix/') === 0) {
+                $serviceName = 'geomatrix';
+            }
+
+            if ($serviceName === 'translate' || strpos($serviceName, 'translate/') === 0) {
+                $serviceName = 'translate';
+            }
+            if ($serviceName === 'ddd' || strpos($serviceName, 'ddd/') === 0) {
+                $serviceName = 'ddd';
+            }
+            if ($serviceName === 'database' || strpos($serviceName, 'database/') === 0) {
+                $serviceName = 'database';
+            }
+
+
             $price = Prices::where('name', $serviceName)->first();
+
+
 
             if (!$price) {
                 return response()->json([
@@ -97,7 +137,9 @@ class RequestsController extends Controller
             // Inicia transação no banco de dados
             return DB::transaction(function () use ($urlRequest, $data, $user, $price, $headers) {
 
-                // Configuração da requisição cURL para a API Brasil
+                // Faz a requisição cURL
+                $bearerAPIBrasil = $user->bearer_apibrasil;
+                
                 $curl = curl_init();
                 curl_setopt_array($curl, [
                     CURLOPT_URL => $urlRequest,
@@ -112,7 +154,7 @@ class RequestsController extends Controller
                     CURLOPT_HTTPHEADER => $headers,
                     CURLOPT_POSTFIELDS => json_encode($data)
                 ]);
-
+              
                 $response = curl_exec($curl); // executa requisição
                 $error = curl_error($curl);
                 curl_close($curl);
@@ -179,6 +221,7 @@ class RequestsController extends Controller
         $url = null;
 
         switch (true) {
+            //APIs por Crédito----------------------------------
             case $name === 'cpf':
                 $url = "{$this->default_api}dados/cpf/credits";
                 break;
@@ -198,6 +241,15 @@ class RequestsController extends Controller
             case $name === 'cnpj':
                 $url = "{$this->default_api}dados/cnpj/credits";
                 break;
+            case $name === 'translate':
+                $url = "{$this->default_api}translate";
+                break;
+
+            // APIs por plano-------------------------------------
+            // CEP dinâmico
+            case strpos($name, 'cep/') === 0:
+                $endpoint = str_replace('cep/', '', $name);
+                return "{$this->default_api}cep/{$endpoint}";
 
             case $name === 'rastreio':
                 $url = "{$this->default_api}correios/rastreio";
@@ -228,6 +280,22 @@ class RequestsController extends Controller
                 $endpoint = substr($name, strlen('geolocation/'));
                 return "{$this->default_api}geolocation/{$endpoint}";
 
+            case strpos($name, 'geomatrix/') === 0:
+                $endpoint = str_replace('geomatrix/', '', $name);
+                return "{$this->default_api}geomatrix/{$endpoint}";
+
+            case strpos($name, 'translate/') === 0:
+                $endpoint = str_replace('translate/', '', $name);
+                return "{$this->default_api}translate/{$endpoint}";
+
+            case strpos($name, 'ddd/') === 0:
+                $endpoint = str_replace('ddd/', '', $name);
+                return "{$this->default_api}ddd/{$endpoint}";
+
+            case strpos($name, 'database/') === 0:
+                $endpoint = str_replace('database/', '', $name);
+                return "{$this->default_api}database/{$endpoint}";
+
             default:
                 throw new \Exception("Serviço '{$name}' não reconhecido em getTypeResquest");
         }
@@ -245,6 +313,7 @@ class RequestsController extends Controller
         if (strpos($serviceName, 'weather/') === 0) {
             $serviceName = 'weather/';
         }
+
 
         return $url;
     }

@@ -29,12 +29,6 @@ Route::middleware('auth:sanctum')->group(function () {
     //rota Placa Fipe 
     Route::post('/vehicles/fipe', [RequestsController::class, 'placaFipe']);
 
-    //rota de ip database
-    Route::post('/database/ip', [RequestsController::class, 'ipDatabase']);
-
-    //rota de translate
-    Route::post('/translate', [RequestsController::class, 'translate']);
-
     //rotas de consultas
     Route::any('/consult/{name}', [RequestsController::class, 'default'])->name('request_default');
 
@@ -58,4 +52,26 @@ Route::middleware('auth:sanctum')->group(function () {
         return app(RequestsController::class)->default($request, $name);
     });
     
+
+    Route::any('/cep/{action?}', function (Request $request, $action = null) {
+        $name = $action ? 'cep/' . trim($action, '/') : 'cep';
+        return app(RequestsController::class)->default($request, $name);
+    })->where('action', '.*');
+    Route::post('/geomatrix', function (Request $request) {
+        return app(RequestsController::class)->default($request, 'geomatrix/distance');
+    });
+    Route::any('/translate/{action?}', function (Request $request, $action = null) {
+        $name = $action ? 'translate/' . trim($action, '/') : 'translate';
+        return app(RequestsController::class)->default($request, $name);
+    })->where('action', '.*');
+    });
+    Route::any('/ddd/{action?}', function (Request $request, $action = null) {
+        $name = $action ? 'ddd/' . trim($action, '/') : 'ddd';
+        return app(RequestsController::class)->default($request, $name);
+    })->where('action', '.*');
+    Route::any('/database/{action?}', function (Request $request, $action = null) {
+        $name = $action ? 'database/' . trim($action, '/') : 'database';
+        return app(RequestsController::class)->default($request, $name);
+    })->where('action', '.*');
+
 });

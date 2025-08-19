@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 
 class PricesController extends Controller
 {
-    // Lista todos os registros de preços, com suporte a paginação e busca por nome
+  // Lista todos os preços com paginação e busca
     public function index(Request $request)
     {
         $query = Prices::query();
@@ -52,11 +52,11 @@ class PricesController extends Controller
     }
 
     // Atualiza um preço existente
+
     public function update(Request $request, $id)
     {
         $price = Prices::findOrFail($id);
 
-        // Valida apenas os campos enviados (não obrigatórios)
         $validated = $request->validate([
             'name'        => 'sometimes|string|max:255',
             'value_buy'   => 'sometimes|numeric|min:0',
@@ -70,7 +70,7 @@ class PricesController extends Controller
         return response()->json($price);
     }
 
-    // Remove um registro de preço
+
     public function destroy($id)
     {
         $price = Prices::findOrFail($id);
@@ -78,4 +78,6 @@ class PricesController extends Controller
 
         return response()->json(['message' => 'Registro deletado com sucesso']);
     }
+
+
 }
