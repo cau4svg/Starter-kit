@@ -30,6 +30,7 @@ docker-compose up -d
 ```
 
 O comando acima iniciará a aplicação juntamente com os serviços de banco de dados MySQL e Redis.
+As migrações do banco de dados serão executadas automaticamente na inicialização do contêiner.
 
 ## Licença
 
