@@ -58,7 +58,7 @@ class RequestsController extends Controller
             // --- capturar e normalizar o DeviceToken recebido ---
             $devicetoken = request()->header('DeviceToken');   // string|array|null
 
-           // Se vier como array (pode acontecer), pegue o primeiro
+            // Se vier como array (pode acontecer), pegue o primeiro
             if (is_array($devicetoken)) {
                 $devicetoken = $devicetoken[0] ?? null;
             }
@@ -72,11 +72,6 @@ class RequestsController extends Controller
             }
             $devicetoken = $devicetoken ? trim($devicetoken) : null;
 
-            // Se a URL for relacionada ao WhatsApp ou Evolution Message
-            if (strpos($urlRequest, 'whatsapp/') !== false || strpos($urlRequest, '/evolution/message') !== false) {
-
-                $headers[] = 'DeviceToken: ' . $devicetoken;
-            }
 
             // Se o nome do serviço não foi informado, tenta deduzir pela URL
             if (!$serviceName) {
@@ -113,6 +108,13 @@ class RequestsController extends Controller
             if ($serviceName === 'database' || strpos($serviceName, 'database/') === 0) {
                 $serviceName = 'database';
             }
+            if (strpos($serviceName, 'geolocation/') === 0) {
+                $serviceName = 'geolocation/';
+            }
+            if (strpos($serviceName, 'weather/') === 0) {
+                $serviceName = 'weather/';
+            }
+            // dd($serviceName);
 
 
             $price = Prices::where('name', $serviceName)->first();
@@ -139,7 +141,7 @@ class RequestsController extends Controller
 
                 // Faz a requisição cURL
                 $bearerAPIBrasil = $user->bearer_apibrasil;
-                
+
                 $curl = curl_init();
                 curl_setopt_array($curl, [
                     CURLOPT_URL => $urlRequest,
@@ -154,7 +156,7 @@ class RequestsController extends Controller
                     CURLOPT_HTTPHEADER => $headers,
                     CURLOPT_POSTFIELDS => json_encode($data)
                 ]);
-              
+
                 $response = curl_exec($curl); // executa requisição
                 $error = curl_error($curl);
                 curl_close($curl);
@@ -263,10 +265,6 @@ class RequestsController extends Controller
                 $url = "{$this->default_api}vehicles/fipe";
                 break;
 
-            case $name === 'ip':
-                $url = "{$this->default_api}database/ip";
-                break;
-
             // Serviços com prefixo dinâmico (weather, whatsapp, geolocation)
             case strpos($name, 'weather/') === 0:
                 $endpoint = str_replace('weather/', '', $name);
@@ -300,21 +298,6 @@ class RequestsController extends Controller
                 throw new \Exception("Serviço '{$name}' não reconhecido em getTypeResquest");
         }
 
-        // Normaliza nomes de serviços específicos para bater com o banco de preços
-        if (strpos($serviceName, 'whatsapp/') === 0) {
-            $serviceName = substr($serviceName, strlen('whatsapp/'));
-        }
-        if (strpos($serviceName, 'evolution/message/') === 0) {
-            $serviceName = substr($serviceName, strlen('evolution/message/'));
-        }
-        if (strpos($serviceName, 'geolocation/') === 0) {
-            $serviceName = 'geolocation/';
-        }
-        if (strpos($serviceName, 'weather/') === 0) {
-            $serviceName = 'weather/';
-        }
-
-
         return $url;
     }
 
@@ -329,33 +312,4 @@ class RequestsController extends Controller
         );
     }
 
-    // Serviço específico: consulta IP em banco de dados
-    public function ipDatabase(Request $request)
-    {
-        $request->validate([
-            'ip' => ['required', 'ip'], // valida se o IP foi enviado corretamente
-        ]);
-
-        // Monta URL com query param aceito pela API Brasil
-        $url = 'https://gateway.apibrasil.io/api/v2/database/ip?ip=' . $request->ip;
-
-        // Repassa para função central, mas com body vazio
-        return $this->defaultRequest(
-            $url,
-            ['Content-Type' => 'application/json'],
-            [],
-            'ip'
-        );
-    }
-
-    // Serviço específico: tradução de textos
-    public function translate(Request $request)
-    {
-        return $this->defaultRequest(
-            'https://gateway.apibrasil.io/api/v2/translate',
-            ['Content-Type' => 'application/json'],
-            $request->all(),
-            'translate'
-        );
-    }
 }
