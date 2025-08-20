@@ -114,6 +114,18 @@ class RequestsController extends Controller
             if (strpos($serviceName, 'weather/') === 0) {
                 $serviceName = 'weather/';
             }
+            // Normalização de serviços de veículos
+            if (strpos($serviceName, 'vehicles/') === 0) {
+                $serviceName = substr($serviceName, strlen('vehicles/'));
+            }
+            if (strpos($serviceName, 'vehicles.') === 0) {
+                $serviceName = substr($serviceName, strlen('vehicles.'));
+            }
+            if ($serviceName === 'vehicles') {
+                $serviceName = $data['service'] ?? $data['servicename'] ?? 'vehicles';
+            }
+
+            $serviceName = strtolower($serviceName);
             // dd($serviceName);
 
 
@@ -219,7 +231,6 @@ class RequestsController extends Controller
     // Função para mapear o nome de um serviço ($name) para a URL correspondente da API Brasil
     public function getTypeResquest($name)
     {
-        // dd($name);
         $serviceName = $name;
         $url = null;
 
@@ -230,12 +241,26 @@ class RequestsController extends Controller
                 break;
 
             case $name === 'vehicles':
-                $url = "{$this->default_api}vehicles/base/001/consulta";
-                break;
+            case in_array($name, [
+                'vehicles',
+                'vehicles-dados',
+                'dados',
+                'agregado-basica',
+                'agregado-propia',
+                'agregado-propria',
+                'renainf',
+                'placa',
+                'roubo-furto',
+                'recall',
+                'leilao',
+                'fipe',
+            ]):
 
             case $name === 'vehicles-dados':
+            case $name === 'dados':
                 $url = "{$this->default_api}vehicles/base/000/dados";
                 break;
+
 
             case $name === 'sms':
                 $url = "{$this->default_api}sms/send/credits";
@@ -260,10 +285,6 @@ class RequestsController extends Controller
 
             case $name === 'translate':
                 $url = "{$this->default_api}translate";
-                break;
-
-            case $name === 'fipe':
-                $url = "{$this->default_api}vehicles/fipe";
                 break;
 
             // Serviços com prefixo dinâmico (weather, whatsapp, geolocation)

@@ -9,13 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    // public function up(): void
-    // {
-    //    Schema::table('users', function (Blueprint $table) {
-    //     $table->longText('bearer_apibrasil')->nullable();
-    //     $table->boolean('is_admin')->default(false);
-    // });
-    // }
+    public function up(): void
+    {
+       Schema::table('users', function (Blueprint $table) {
+        $table->longText('bearer_apibrasil')->nullable();
+        $table->boolean('is_admin')->default(false);
+    });
+    }
 
     /**
      * Reverse the migrations.
