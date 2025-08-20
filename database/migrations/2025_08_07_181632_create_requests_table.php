@@ -17,9 +17,9 @@ return new class extends Migration
              $table->enum('type',["post","get"]);
              $table->string("endpoint");
              $table->string("request");
-             $table->string("response");
+             $table->longText("response");
              $table->string("status");
-             $table->double("ammount",10,2);
+             $table->double("amount",10,2);
              $table->foreignUuid('price_id')->nullable()->constrained('prices')->onDelete('cascade');
              $table->foreignUuid('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
