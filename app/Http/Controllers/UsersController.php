@@ -15,8 +15,6 @@ class UsersController extends Controller
         return User::all();
     }
 
-
-
     /**
      * Show the form for creating a new resource.
      */
@@ -58,14 +56,14 @@ class UsersController extends Controller
 
             $user = User::findOrFail($id);
 
-            if ($request->has('is_admin') && !auth()->user()->is_admin) {
+            if ($request->has('is_admin') && ! auth()->user()->is_admin) {
                 return response()->json(['error' => 'Apenas administradores podem alterar o campo is_admin'], 403);
             }
 
             $data = $request->only(['name', 'email', 'cellphone', 'password', 'bearer_apibrasil']);
 
             // Se veio senha, criptografa
-            if (!empty($data['password'])) {
+            if (! empty($data['password'])) {
                 $data['password'] = bcrypt($data['password']);
             } else {
                 unset($data['password']);
@@ -76,14 +74,46 @@ class UsersController extends Controller
 
             return response()->json([
                 'message' => 'Usuário atualizado com sucesso',
-                'user' => $user->makeHidden(['password'])
+                'user' => $user->makeHidden(['password']),
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Error ao  atualizar úsuario',
-                'error' => $th->getMessage()
+                'error' => $th->getMessage(),
             ]);
         }
+    }
+
+    public function makeAdmin(Request $request, string $id)
+    {
+        if (! auth()->user()->is_admin) {
+            return response()->json([
+                'message' => 'Apenas administradores podem realizar essa ação',
+            ], 403);
+        }
+
+        $user = User::find($id);
+
+        if (! $user) {
+            return response()->json([
+                'message' => 'Usuário não encontrado',
+            ], 404);
+        }
+
+        if ($user->is_admin) {
+            return response()->json([
+                'message' => 'Usuário já é administrador',
+            ], 400);
+        }
+
+        $user->is_admin = true;
+        $user->save();
+        $user->refresh();
+
+        return response()->json([
+            'message' => 'Usuário promovido a administrador com sucesso',
+            'user' => $user->makeHidden(['password']),
+        ]);
     }
 
     /**
