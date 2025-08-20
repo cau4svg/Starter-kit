@@ -1,8 +1,8 @@
 #!/bin/sh
 set -e
 
-# Run database migrations automatically
-until php artisan migrate --force; do
+# Espera DB e roda migrate + seed
+until php artisan migrate --seed --force; do
   echo "Waiting for database to be ready..."
   sleep 5
 done

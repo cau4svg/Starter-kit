@@ -69,3 +69,4 @@ Route::middleware('auth:sanctum')->group(function () {
         )->where('action', '.*');
     });
 });
+
