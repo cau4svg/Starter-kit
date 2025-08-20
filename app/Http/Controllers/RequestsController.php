@@ -94,11 +94,9 @@ class RequestsController extends Controller
             if ($serviceName === 'cep' || strpos($serviceName, 'cep/') === 0) {
                 $serviceName = 'cep';
             }
-
             if ($serviceName === 'geomatrix' || strpos($serviceName, 'geomatrix/') === 0) {
                 $serviceName = 'geomatrix';
             }
-
             if ($serviceName === 'translate' || strpos($serviceName, 'translate/') === 0) {
                 $serviceName = 'translate';
             }
@@ -114,12 +112,8 @@ class RequestsController extends Controller
             if (strpos($serviceName, 'weather/') === 0) {
                 $serviceName = 'weather/';
             }
-            // dd($serviceName);
-
 
             $price = Prices::where('name', $serviceName)->first();
-
-
 
             if (!$price) {
                 return response()->json([
@@ -265,7 +259,13 @@ class RequestsController extends Controller
                 $url = "{$this->default_api}vehicles/fipe";
                 break;
 
-            // Serviços com prefixo dinâmico (weather, whatsapp, geolocation)
+
+            case $name === 'ip':
+                $url = "{$this->default_api}database/ip";
+                break;
+
+            // Serviços com prefixo dinâmico (weather, whatsapp, geolocation, geomatrix, translate, ddd, database)
+
             case strpos($name, 'weather/') === 0:
                 $endpoint = str_replace('weather/', '', $name);
                 return "{$this->default_api}weather/{$endpoint}";
