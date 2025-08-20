@@ -27,13 +27,13 @@ class RequestsController extends Controller
     public function default(Request $request, $name)
     {
         try {
-            $urlRequest = $this->getTypeResquest($name); // obtém a URL do serviço a partir do nome informado
+            $service = $this->getTypeResquest($name); // obtém a URL e o nome do serviço
 
             $data = $request->all();       // captura todos os dados enviados na request
             $headers = $request->header(); // captura todos os headers enviados
 
             // Repassa para a função central de requisições
-            return $this->defaultRequest($urlRequest, $headers, $data, $name);
+            return $this->defaultRequest($service['url'], $headers, $data, $service['service']);
         } catch (\Throwable $th) {
             return response()->json(["error" => true, "message" => $th->getMessage()]);
         }
@@ -223,10 +223,12 @@ class RequestsController extends Controller
                 break;
 
             case $name === 'vehicles':
+                $serviceName = 'vehicles.consulta';
                 $url = "{$this->default_api}vehicles/base/001/consulta";
                 break;
 
             case $name === 'vehicles-dados':
+                $serviceName = 'vehicles.dados';
                 $url = "{$this->default_api}vehicles/base/000/dados";
                 break;
 
@@ -245,7 +247,7 @@ class RequestsController extends Controller
             // CEP dinâmico
             case strpos($name, 'cep/') === 0:
                 $endpoint = str_replace('cep/', '', $name);
-                return "{$this->default_api}cep/{$endpoint}";
+                return ['url' => "{$this->default_api}cep/{$endpoint}", 'service' => 'cep'];
 
             case $name === 'rastreio':
                 $url = "{$this->default_api}correios/rastreio";
@@ -256,6 +258,7 @@ class RequestsController extends Controller
                 break;
 
             case $name === 'fipe':
+                $serviceName = 'vehicles.fipe';
                 $url = "{$this->default_api}vehicles/fipe";
                 break;
 
@@ -268,47 +271,48 @@ class RequestsController extends Controller
 
             case strpos($name, 'weather/') === 0:
                 $endpoint = str_replace('weather/', '', $name);
-                return "{$this->default_api}weather/{$endpoint}";
+                return ['url' => "{$this->default_api}weather/{$endpoint}", 'service' => 'weather/'];
 
             case strpos($name, 'whatsapp/') === 0:
                 $endpoint = str_replace('whatsapp/', '', $name);
-                return "{$this->default_api}whatsapp/{$endpoint}";
+                return ['url' => "{$this->default_api}whatsapp/{$endpoint}", 'service' => $name];
 
             case strpos($name, 'geolocation/') === 0:
                 $endpoint = substr($name, strlen('geolocation/'));
-                return "{$this->default_api}geolocation/{$endpoint}";
+                return ['url' => "{$this->default_api}geolocation/{$endpoint}", 'service' => $name];
 
             case strpos($name, 'geomatrix/') === 0:
                 $endpoint = str_replace('geomatrix/', '', $name);
-                return "{$this->default_api}geomatrix/{$endpoint}";
+                return ['url' => "{$this->default_api}geomatrix/{$endpoint}", 'service' => 'geomatrix'];
 
             case strpos($name, 'translate/') === 0:
                 $endpoint = str_replace('translate/', '', $name);
-                return "{$this->default_api}translate/{$endpoint}";
+                return ['url' => "{$this->default_api}translate/{$endpoint}", 'service' => 'translate'];
 
             case strpos($name, 'ddd/') === 0:
                 $endpoint = str_replace('ddd/', '', $name);
-                return "{$this->default_api}ddd/{$endpoint}";
+                return ['url' => "{$this->default_api}ddd/{$endpoint}", 'service' => 'ddd'];
 
             case strpos($name, 'database/') === 0:
                 $endpoint = str_replace('database/', '', $name);
-                return "{$this->default_api}database/{$endpoint}";
+                return ['url' => "{$this->default_api}database/{$endpoint}", 'service' => 'database'];
 
             default:
                 throw new \Exception("Serviço '{$name}' não reconhecido em getTypeResquest");
         }
 
-        return $url;
+        return ['url' => $url, 'service' => $serviceName];
     }
 
     // Serviço específico: FIPE (veículos)
     public function placaFipe(Request $request)
     {
+        $service = $this->getTypeResquest('fipe');
         return $this->defaultRequest(
-            'https://gateway.apibrasil.io/api/v2/vehicles/fipe',
+            $service['url'],
             [],
             $request->all(),
-            'vehicles.fipe'
+            $service['service']
         );
     }
 
