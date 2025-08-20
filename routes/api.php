@@ -37,9 +37,9 @@ Route::middleware('auth:sanctum')->group(function () {
         $name = 'whatsapp/' . $action;
         return app(RequestsController::class)->default($request, $name);
     });
-
     //rota de rastreio
     Route::post('correios/{name}', [RequestsController::class, 'default']);
+
     //rota de geolocation
     Route::post('/geolocation/{action}', function (Request $request, $action) {
         $name = 'geolocation/' . $action;
@@ -52,26 +52,35 @@ Route::middleware('auth:sanctum')->group(function () {
         return app(RequestsController::class)->default($request, $name);
     });
     
-
+    //rota de cep
     Route::any('/cep/{action?}', function (Request $request, $action = null) {
         $name = $action ? 'cep/' . trim($action, '/') : 'cep';
         return app(RequestsController::class)->default($request, $name);
     })->where('action', '.*');
+
+    //rota de distancia ceps
     Route::post('/geomatrix', function (Request $request) {
         return app(RequestsController::class)->default($request, 'geomatrix/distance');
     });
+
+    //rota de tradução
     Route::any('/translate/{action?}', function (Request $request, $action = null) {
         $name = $action ? 'translate/' . trim($action, '/') : 'translate';
         return app(RequestsController::class)->default($request, $name);
     })->where('action', '.*');
-    });
+    
+
+    //rota de ddd anatel
     Route::any('/ddd/{action?}', function (Request $request, $action = null) {
         $name = $action ? 'ddd/' . trim($action, '/') : 'ddd';
         return app(RequestsController::class)->default($request, $name);
     })->where('action', '.*');
+
+    //rota de ip database
     Route::any('/database/{action?}', function (Request $request, $action = null) {
         $name = $action ? 'database/' . trim($action, '/') : 'database';
         return app(RequestsController::class)->default($request, $name);
     })->where('action', '.*');
 
 });
+

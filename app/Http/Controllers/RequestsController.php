@@ -58,7 +58,7 @@ class RequestsController extends Controller
             // --- capturar e normalizar o DeviceToken recebido ---
             $devicetoken = request()->header('DeviceToken');   // string|array|null
 
-           // Se vier como array (pode acontecer), pegue o primeiro
+            // Se vier como array (pode acontecer), pegue o primeiro
             if (is_array($devicetoken)) {
                 $devicetoken = $devicetoken[0] ?? null;
             }
@@ -72,11 +72,6 @@ class RequestsController extends Controller
             }
             $devicetoken = $devicetoken ? trim($devicetoken) : null;
 
-            // Se a URL for relacionada ao WhatsApp ou Evolution Message
-            if (strpos($urlRequest, 'whatsapp/') !== false || strpos($urlRequest, '/evolution/message') !== false) {
-
-                $headers[] = 'DeviceToken: ' . $devicetoken;
-            }
 
             // Se o nome do serviço não foi informado, tenta deduzir pela URL
             if (!$serviceName) {
@@ -99,11 +94,9 @@ class RequestsController extends Controller
             if ($serviceName === 'cep' || strpos($serviceName, 'cep/') === 0) {
                 $serviceName = 'cep';
             }
-
             if ($serviceName === 'geomatrix' || strpos($serviceName, 'geomatrix/') === 0) {
                 $serviceName = 'geomatrix';
             }
-
             if ($serviceName === 'translate' || strpos($serviceName, 'translate/') === 0) {
                 $serviceName = 'translate';
             }
@@ -112,6 +105,12 @@ class RequestsController extends Controller
             }
             if ($serviceName === 'database' || strpos($serviceName, 'database/') === 0) {
                 $serviceName = 'database';
+            }
+            if (strpos($serviceName, 'geolocation/') === 0) {
+                $serviceName = 'geolocation/';
+            }
+            if (strpos($serviceName, 'weather/') === 0) {
+                $serviceName = 'weather/';
             }
 
 
@@ -139,7 +138,7 @@ class RequestsController extends Controller
 
                 // Faz a requisição cURL
                 $bearerAPIBrasil = $user->bearer_apibrasil;
-                
+
                 $curl = curl_init();
                 curl_setopt_array($curl, [
                     CURLOPT_URL => $urlRequest,
@@ -154,7 +153,7 @@ class RequestsController extends Controller
                     CURLOPT_HTTPHEADER => $headers,
                     CURLOPT_POSTFIELDS => json_encode($data)
                 ]);
-              
+
                 $response = curl_exec($curl); // executa requisição
                 $error = curl_error($curl);
                 curl_close($curl);
@@ -267,7 +266,7 @@ class RequestsController extends Controller
                 $url = "{$this->default_api}database/ip";
                 break;
 
-            // Serviços com prefixo dinâmico (weather, whatsapp, geolocation)
+            // Serviços com prefixo dinâmico (weather, whatsapp, geolocation, geomatrix, translate, ddd, database)
             case strpos($name, 'weather/') === 0:
                 $endpoint = str_replace('weather/', '', $name);
                 return "{$this->default_api}weather/{$endpoint}";
@@ -299,22 +298,6 @@ class RequestsController extends Controller
             default:
                 throw new \Exception("Serviço '{$name}' não reconhecido em getTypeResquest");
         }
-
-        // Normaliza nomes de serviços específicos para bater com o banco de preços
-        if (strpos($serviceName, 'whatsapp/') === 0) {
-            $serviceName = substr($serviceName, strlen('whatsapp/'));
-        }
-        if (strpos($serviceName, 'evolution/message/') === 0) {
-            $serviceName = substr($serviceName, strlen('evolution/message/'));
-        }
-        if (strpos($serviceName, 'geolocation/') === 0) {
-            $serviceName = 'geolocation/';
-        }
-        if (strpos($serviceName, 'weather/') === 0) {
-            $serviceName = 'weather/';
-        }
-
-
         return $url;
     }
 
