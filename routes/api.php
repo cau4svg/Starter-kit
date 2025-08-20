@@ -8,79 +8,65 @@ use App\Http\Controllers\PricesController;
 use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\TransactionsController;
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
-//rota de login, que puxa usuario pelo id
+// rota de autenticação simples
+Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login'])->name('login');
-Route::middleware('auth:sanctum')->put('/users/{id}', [UsersController::class, 'update']);
 
-//agrupamento de middleware que so deixa usuario realizar ações após o login
+// rotas protegidas por sanctum
 Route::middleware('auth:sanctum')->group(function () {
 
-    //rotas de autenticação
-    Route::middleware('auth:sanctum')->get('/transactions', [TransactionsController::class, 'index']);
-    Route::post('/add-balance', [TransactionsController::class, 'addBalance']);
+    // informações do usuário logado
+    Route::get('/user', fn(Request $request) => $request->user());
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
+
+    // atualizar usuário
+    Route::put('/users/{id}', [UsersController::class, 'update']);
+
+    // transações e saldo
+    Route::get('/transactions', [TransactionsController::class, 'index']);
+    Route::post('/add-balance', [TransactionsController::class, 'addBalance']);
+
+    // preços
     Route::apiResource('prices', PricesController::class);
 
-    //rota Placa Fipe 
-    Route::post('/vehicles/fipe', [RequestsController::class, 'placaFipe']);
+    // consultas padronizadas → RequestsController::default
+    Route::controller(RequestsController::class)->group(function () {
+        Route::post('/vehicles/fipe', 'placaFipe');
 
-    //rotas de consultas
-    Route::any('/consult/{name}', [RequestsController::class, 'default'])->name('request_default');
+        Route::any('/consult/{name}', 'default')->name('request_default');
 
-    //rota de whatsapp wpp e baileys
-    Route::post('/whatsapp/{action}', function (Request $request, $action) {
-        $name = 'whatsapp/' . $action;
-        return app(RequestsController::class)->default($request, $name);
+        Route::prefix('whatsapp')->group(function () {
+            Route::post('{action}', fn(Request $req, $action) => app(RequestsController::class)->default($req, "whatsapp/$action"));
+        });
+
+        Route::post('/correios/{name}', 'default');
+
+        Route::prefix('geolocation')->group(function () {
+            Route::post('{action}', fn(Request $req, $action) => app(RequestsController::class)->default($req, "geolocation/$action"));
+        });
+
+        Route::prefix('weather')->group(function () {
+            Route::post('{action}', fn(Request $req, $action) => app(RequestsController::class)->default($req, "weather/$action"));
+        });
+
+        Route::any('/cep/{action?}', fn(Request $req, $action = null) =>
+            app(RequestsController::class)->default($req, $action ? "cep/" . trim($action, '/') : "cep")
+        )->where('action', '.*');
+
+        Route::post('/geomatrix', fn(Request $req) => app(RequestsController::class)->default($req, 'geomatrix/distance'));
+
+        Route::any('/translate/{action?}', fn(Request $req, $action = null) =>
+            app(RequestsController::class)->default($req, $action ? "translate/" . trim($action, '/') : "translate")
+        )->where('action', '.*');
+
+        Route::any('/ddd/{action?}', fn(Request $req, $action = null) =>
+            app(RequestsController::class)->default($req, $action ? "ddd/" . trim($action, '/') : "ddd")
+        )->where('action', '.*');
+
+        Route::any('/database/{action?}', fn(Request $req, $action = null) =>
+            app(RequestsController::class)->default($req, $action ? "database/" . trim($action, '/') : "database")
+        )->where('action', '.*');
     });
-    //rota de rastreio
-    Route::post('correios/{name}', [RequestsController::class, 'default']);
-
-    //rota de geolocation
-    Route::post('/geolocation/{action}', function (Request $request, $action) {
-        $name = 'geolocation/' . $action;
-        return app(RequestsController::class)->default($request, $name);
-    });
-    
-    //rota de clima
-    Route::post('/weather/{action}', function (Request $request, $action) {
-        $name = 'weather/' . $action;        // ex.: weather/city, weather/forecast
-        return app(RequestsController::class)->default($request, $name);
-    });
-    
-    //rota de cep
-    Route::any('/cep/{action?}', function (Request $request, $action = null) {
-        $name = $action ? 'cep/' . trim($action, '/') : 'cep';
-        return app(RequestsController::class)->default($request, $name);
-    })->where('action', '.*');
-
-    //rota de distancia ceps
-    Route::post('/geomatrix', function (Request $request) {
-        return app(RequestsController::class)->default($request, 'geomatrix/distance');
-    });
-
-    //rota de tradução
-    Route::any('/translate/{action?}', function (Request $request, $action = null) {
-        $name = $action ? 'translate/' . trim($action, '/') : 'translate';
-        return app(RequestsController::class)->default($request, $name);
-    })->where('action', '.*');
-    
-
-    //rota de ddd anatel
-    Route::any('/ddd/{action?}', function (Request $request, $action = null) {
-        $name = $action ? 'ddd/' . trim($action, '/') : 'ddd';
-        return app(RequestsController::class)->default($request, $name);
-    })->where('action', '.*');
-
-    //rota de ip database
-    Route::any('/database/{action?}', function (Request $request, $action = null) {
-        $name = $action ? 'database/' . trim($action, '/') : 'database';
-        return app(RequestsController::class)->default($request, $name);
-    })->where('action', '.*');
-
 });
 

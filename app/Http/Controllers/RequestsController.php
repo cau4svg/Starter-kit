@@ -113,10 +113,7 @@ class RequestsController extends Controller
                 $serviceName = 'weather/';
             }
 
-
             $price = Prices::where('name', $serviceName)->first();
-
-
 
             if (!$price) {
                 return response()->json([
@@ -262,11 +259,13 @@ class RequestsController extends Controller
                 $url = "{$this->default_api}vehicles/fipe";
                 break;
 
+
             case $name === 'ip':
                 $url = "{$this->default_api}database/ip";
                 break;
 
             // Serviços com prefixo dinâmico (weather, whatsapp, geolocation, geomatrix, translate, ddd, database)
+
             case strpos($name, 'weather/') === 0:
                 $endpoint = str_replace('weather/', '', $name);
                 return "{$this->default_api}weather/{$endpoint}";
@@ -298,6 +297,7 @@ class RequestsController extends Controller
             default:
                 throw new \Exception("Serviço '{$name}' não reconhecido em getTypeResquest");
         }
+
         return $url;
     }
 
@@ -312,33 +312,4 @@ class RequestsController extends Controller
         );
     }
 
-    // Serviço específico: consulta IP em banco de dados
-    public function ipDatabase(Request $request)
-    {
-        $request->validate([
-            'ip' => ['required', 'ip'], // valida se o IP foi enviado corretamente
-        ]);
-
-        // Monta URL com query param aceito pela API Brasil
-        $url = 'https://gateway.apibrasil.io/api/v2/database/ip?ip=' . $request->ip;
-
-        // Repassa para função central, mas com body vazio
-        return $this->defaultRequest(
-            $url,
-            ['Content-Type' => 'application/json'],
-            [],
-            'ip'
-        );
-    }
-
-    // Serviço específico: tradução de textos
-    public function translate(Request $request)
-    {
-        return $this->defaultRequest(
-            'https://gateway.apibrasil.io/api/v2/translate',
-            ['Content-Type' => 'application/json'],
-            $request->all(),
-            'translate'
-        );
-    }
 }
