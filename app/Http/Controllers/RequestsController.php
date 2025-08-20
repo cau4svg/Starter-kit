@@ -219,6 +219,7 @@ class RequestsController extends Controller
     // Função para mapear o nome de um serviço ($name) para a URL correspondente da API Brasil
     public function getTypeResquest($name)
     {
+        // dd($name);
         $serviceName = $name;
         $url = null;
 
@@ -299,17 +300,6 @@ class RequestsController extends Controller
         }
 
         return $url;
-    }
-
-    // Serviço específico: FIPE (veículos)
-    public function placaFipe(Request $request)
-    {
-        return $this->defaultRequest(
-            'https://gateway.apibrasil.io/api/v2/vehicles/fipe',
-            [],
-            $request->all(),
-            'vehicles.fipe'
-        );
     }
 
 }
