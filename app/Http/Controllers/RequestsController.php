@@ -113,6 +113,22 @@ class RequestsController extends Controller
                 $serviceName = 'weather/';
             }
 
+            // Normalização de serviços de veículos
+            if (strpos($serviceName, 'vehicles/') === 0) {
+                $serviceName = substr($serviceName, strlen('vehicles/'));
+            }
+            if (strpos($serviceName, 'vehicles.') === 0) {
+                $serviceName = substr($serviceName, strlen('vehicles.'));
+            }
+            if ($serviceName === 'vehicles') {
+                $serviceName = $data['service'] ?? $data['servicename'] ?? 'vehicles';
+            }
+
+            $serviceName = strtolower($serviceName);
+            // dd($serviceName);
+
+
+
             $price = Prices::where('name', $serviceName)->first();
 
             if (!$price) {
@@ -223,12 +239,26 @@ class RequestsController extends Controller
                 break;
 
             case $name === 'vehicles':
-                $url = "{$this->default_api}vehicles/base/001/consulta";
-                break;
+            case in_array($name, [
+                'vehicles',
+                'vehicles-dados',
+                'dados',
+                'agregado-basica',
+                'agregado-propia',
+                'agregado-propria',
+                'renainf',
+                'placa',
+                'roubo-furto',
+                'recall',
+                'leilao',
+                'fipe',
+            ]):
 
             case $name === 'vehicles-dados':
+            case $name === 'dados':
                 $url = "{$this->default_api}vehicles/base/000/dados";
                 break;
+
 
             case $name === 'sms':
                 $url = "{$this->default_api}sms/send/credits";
@@ -255,16 +285,14 @@ class RequestsController extends Controller
                 $url = "{$this->default_api}translate";
                 break;
 
-            case $name === 'fipe':
-                $url = "{$this->default_api}vehicles/fipe";
-                break;
 
-
+            // Serviços com prefixo dinâmico (weather, whatsapp, geolocation)
             case $name === 'ip':
                 $url = "{$this->default_api}database/ip";
                 break;
 
             // Serviços com prefixo dinâmico (weather, whatsapp, geolocation, geomatrix, translate, ddd, database)
+
 
             case strpos($name, 'weather/') === 0:
                 $endpoint = str_replace('weather/', '', $name);
@@ -299,17 +327,6 @@ class RequestsController extends Controller
         }
 
         return $url;
-    }
-
-    // Serviço específico: FIPE (veículos)
-    public function placaFipe(Request $request)
-    {
-        return $this->defaultRequest(
-            'https://gateway.apibrasil.io/api/v2/vehicles/fipe',
-            [],
-            $request->all(),
-            'vehicles.fipe'
-        );
     }
 
 }
