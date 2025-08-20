@@ -2,14 +2,12 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Support\Str;
-use App\Models\Transactions;
-use Laravel\Sanctum\HasApiTokens;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
+use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -20,14 +18,14 @@ class User extends Authenticatable
 
     public function transaction(string $type, float $amount)
     {
-        if (!in_array($type, ['credit', 'debit'])) {
+        if (! in_array($type, ['credit', 'debit'])) {
             throw new \InvalidArgumentException("Tipo de transação inválido: $type");
         }
 
         // Cria a transação
         $transaction = $this->transactions()->create([
             'type' => $type,
-            'amount' => $amount
+            'amount' => $amount,
         ]);
 
         // Atualiza o saldo
@@ -43,7 +41,17 @@ class User extends Authenticatable
     }
 
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasApiTokens, HasFactory, Notifiable, HasUuids;
+    use HasApiTokens, HasFactory, HasUuids, Notifiable;
+
+    /**
+     * Indicates if the IDs are auto-incrementing.
+     */
+    public $incrementing = false;
+
+    /**
+     * The data type of the primary key ID.
+     */
+    protected $keyType = 'string';
 
     /**
      * The attributes that are mass assignable.
@@ -57,9 +65,8 @@ class User extends Authenticatable
         'cellphone',
         'bearer_apibrasil',
         'is_admin',
-        'balance', 
+        'balance',
     ];
-
 
     /**
      * The attributes that should be hidden for serialization.
@@ -85,8 +92,7 @@ class User extends Authenticatable
         ];
     }
 
-
-    //TESTE
+    // TESTE
     protected static function boot()
     {
         parent::boot();
