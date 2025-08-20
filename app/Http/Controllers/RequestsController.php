@@ -114,6 +114,18 @@ class RequestsController extends Controller
             if (strpos($serviceName, 'weather/') === 0) {
                 $serviceName = 'weather/';
             }
+            // Normalização de serviços de veículos
+            if (strpos($serviceName, 'vehicles/') === 0) {
+                $serviceName = substr($serviceName, strlen('vehicles/'));
+            }
+            if (strpos($serviceName, 'vehicles.') === 0) {
+                $serviceName = substr($serviceName, strlen('vehicles.'));
+            }
+            if ($serviceName === 'vehicles') {
+                $serviceName = $data['service'] ?? $data['servicename'] ?? 'vehicles';
+            }
+
+            $serviceName = strtolower($serviceName);
             // dd($serviceName);
 
 
@@ -233,7 +245,36 @@ class RequestsController extends Controller
                 break;
 
             case $name === 'vehicles-dados':
+            case $name === 'dados':
                 $url = "{$this->default_api}vehicles/base/000/dados";
+                break;
+
+            case $name === 'agregado-basica':
+                $url = "{$this->default_api}vehicles/agregado/basica";
+                break;
+
+            case ($name === 'agregado-propia' || $name === 'agregado-propria'):
+                $url = "{$this->default_api}vehicles/agregado/propria";
+                break;
+
+            case $name === 'renainf':
+                $url = "{$this->default_api}vehicles/renainf";
+                break;
+
+            case $name === 'placa':
+                $url = "{$this->default_api}vehicles/placa";
+                break;
+
+            case $name === 'roubo-furto':
+                $url = "{$this->default_api}vehicles/roubo-furto";
+                break;
+
+            case $name === 'recall':
+                $url = "{$this->default_api}vehicles/recall";
+                break;
+
+            case $name === 'leilao':
+                $url = "{$this->default_api}vehicles/leilao";
                 break;
 
             case $name === 'sms':
