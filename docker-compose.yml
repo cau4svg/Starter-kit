@@ -23,7 +23,7 @@ services:
       - redis
 
   web:
-    image: phpmyadmin
+    image: nginx:alpine
     container_name: starter-kit-web
     restart: unless-stopped
     ports:
