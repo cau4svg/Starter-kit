@@ -26,6 +26,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // transações e saldo
     Route::get('/transactions', [TransactionsController::class, 'index']);
     Route::post('/add-balance', [TransactionsController::class, 'addBalance']);
+    Route::post('/users/{id}/add-balance', [TransactionsController::class, 'addBalanceToUser']);
 
     // preços
     Route::apiResource('prices', PricesController::class);
