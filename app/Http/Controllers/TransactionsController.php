@@ -19,7 +19,7 @@ class TransactionsController extends Controller
         $user = $request->user();
 
         //if Auth::user()->is_admin != true return somente admin pode realizar uma recarga;
-        if(!Auth::user()->is_admin){
+        if (!Auth::user()->is_admin) {
             return response()->json([
                 'message' => "Somente administradores podem realizar recarga",
             ]);
@@ -55,7 +55,10 @@ class TransactionsController extends Controller
             ], 403);
         }
 
-        $targetUser = User::findOrFail($id);
+        $targetUser = User::find($id);
+        if (!$targetUser) {
+            return response()->json(['message' => 'Usuário não encontrado'], 404);
+        }
 
         // prevent adding balance to another admin
         if ($targetUser->is_admin) {
