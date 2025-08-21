@@ -7,4 +7,6 @@ until php artisan migrate --force; do
   sleep 5
 done
 
+php artisan db:seed --force
+
 exec "$@"
