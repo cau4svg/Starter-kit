@@ -56,7 +56,15 @@ class UsersController extends Controller
 
             $user = User::findOrFail($id);
 
-            if ($request->has('is_admin') && ! auth()->user()->is_admin) {
+            $authUser = $request->user();
+
+            if (! $authUser->is_admin && $authUser->id !== $user->id) {
+                return response()->json([
+                    'message' => 'Você só pode atualizar seu próprio perfil',
+                ], 403);
+            }
+
+            if ($request->has('is_admin') && ! $authUser->is_admin) {
                 return response()->json(['error' => 'Apenas administradores podem alterar o campo is_admin'], 403);
             }
 
