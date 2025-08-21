@@ -43,7 +43,7 @@ class AuthController extends Controller
             'email'     => $request->email,
             'cellphone' => $request->cellphone,
             'password'  => bcrypt($request->password),
-            'is_admin'  => $request->is_admin ?? false,
+            'is_admin'  => $isAdmin,
             'bearer_apibrasil' => $request->bearer_apibrasil ?? null,
             'balance'   => 0 //sempre comeca com 0
         ]);
