@@ -107,10 +107,10 @@ class RequestsController extends Controller
                 $serviceName = 'database';
             }
             if (strpos($serviceName, 'geolocation/') === 0) {
-                $serviceName = 'geolocation/';
+                $serviceName = 'geolocation';
             }
             if (strpos($serviceName, 'weather/') === 0) {
-                $serviceName = 'weather/';
+                $serviceName = 'weather';
             }
 
             // Normalização de serviços de veículos

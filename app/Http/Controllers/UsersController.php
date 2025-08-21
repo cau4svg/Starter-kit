@@ -15,8 +15,6 @@ class UsersController extends Controller
         return User::all();
     }
 
-
-
     /**
      * Show the form for creating a new resource.
      */
@@ -58,14 +56,47 @@ class UsersController extends Controller
 
             $user = User::findOrFail($id);
 
-            if ($request->has('is_admin') && !auth()->user()->is_admin) {
+            $authUser = $request->user();
+
+            if (! $authUser->is_admin && $authUser->id !== $user->id) {
+                return response()->json([
+                    'message' => 'Você só pode atualizar seu próprio perfil',
+                ], 403);
+            }
+
+            if ($request->has('is_admin') && ! $authUser->is_admin) {
                 return response()->json(['error' => 'Apenas administradores podem alterar o campo is_admin'], 403);
             }
 
             $data = $request->only(['name', 'email', 'cellphone', 'password', 'bearer_apibrasil']);
 
+            // valida se o e-mail já está em uso por outro usuário
+            if (! empty($data['email']) && $data['email'] !== $user->email) {
+                $exists = User::where('email', $data['email'])
+                    ->where('id', '!=', $user->id)
+                    ->exists();
+
+                if ($exists) {
+                    return response()->json([
+                        'error' => 'E-mail já está em uso',
+                    ], 422);
+                }
+            }
+            // valida se o telefone já está em uso por outro usuário
+            if (! empty($data['cellphone']) && $data['cellphone'] !== $user->email) {
+                $exists = User::where('cellphone', $data['cellphone'])
+                    ->where('id', '!=', $user->id)
+                    ->exists();
+
+                if ($exists) {
+                    return response()->json([
+                        'error' => 'telefone já está em uso',
+                    ], 422);
+                }
+            }
+
             // Se veio senha, criptografa
-            if (!empty($data['password'])) {
+            if (! empty($data['password'])) {
                 $data['password'] = bcrypt($data['password']);
             } else {
                 unset($data['password']);
@@ -76,14 +107,46 @@ class UsersController extends Controller
 
             return response()->json([
                 'message' => 'Usuário atualizado com sucesso',
-                'user' => $user->makeHidden(['password'])
+                'user' => $user->makeHidden(['password']),
             ]);
         } catch (\Throwable $th) {
             return response()->json([
                 'message' => 'Error ao  atualizar úsuario',
-                'error' => $th->getMessage()
+                'error' => $th->getMessage(),
             ]);
         }
+    }
+
+    public function makeAdmin(Request $request, string $id)
+    {
+        if (! auth()->user()->is_admin) {
+            return response()->json([
+                'message' => 'Apenas administradores podem realizar essa ação',
+            ], 403);
+        }
+
+        $user = User::find($id);
+
+        if (! $user) {
+            return response()->json([
+                'message' => 'Usuário não encontrado',
+            ], 404);
+        }
+
+        if ($user->is_admin) {
+            return response()->json([
+                'message' => 'Usuário já é administrador',
+            ], 400);
+        }
+
+        $user->is_admin = true;
+        $user->save();
+        $user->refresh();
+
+        return response()->json([
+            'message' => 'Usuário promovido a administrador com sucesso',
+            'user' => $user->makeHidden(['password']),
+        ]);
     }
 
     /**
@@ -91,6 +154,30 @@ class UsersController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if (! auth()->user()->is_admin) {
+            return response()->json([
+                'message' => 'Apenas administradores podem realizar essa ação',
+            ], 403);
+        }
+
+        if (auth()->id() === $id) {
+            return response()->json([
+                'message' => 'Administradores não podem deletar a si mesmos',
+            ], 400);
+        }
+
+        $user = User::find($id);
+
+        if (! $user) {
+            return response()->json([
+                'message' => 'Usuário não encontrado',
+            ], 404);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Usuário deletado com sucesso',
+        ]);
     }
 }

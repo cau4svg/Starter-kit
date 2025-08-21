@@ -14,8 +14,8 @@ services:
       DB_HOST: db
       DB_PORT: 3306
       DB_DATABASE: starter_kit
-      DB_USERNAME: root
-      DB_PASSWORD: rootpw
+      DB_USERNAME: starter_kit
+      DB_PASSWORD: secret
       REDIS_HOST: redis
       REDIS_PORT: 6379
     depends_on:
@@ -23,7 +23,7 @@ services:
       - redis
 
   web:
-    image: phpmyadmin
+    image: nginx:alpine
     container_name: starter-kit-web
     restart: unless-stopped
     ports:
@@ -54,6 +54,5 @@ services:
     restart: unless-stopped
     ports:
       - "6379:6379"
-
 volumes:
   db-data:

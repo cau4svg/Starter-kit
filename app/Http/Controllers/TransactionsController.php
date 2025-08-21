@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transactions;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -18,7 +19,7 @@ class TransactionsController extends Controller
         $user = $request->user();
 
         //if Auth::user()->is_admin != true return somente admin pode realizar uma recarga;
-        if(!Auth::user()->is_admin){
+        if (!Auth::user()->is_admin) {
             return response()->json([
                 'message' => "Somente administradores podem realizar recarga",
             ]);
@@ -38,6 +39,46 @@ class TransactionsController extends Controller
         return response()->json([
             'message' => 'Saldo adicionado com sucesso',
             'balance' => $user->balance
+        ]);
+    }
+
+    public function addBalanceToUser(Request $request, string $id)
+    {
+        $request->validate([
+            'amount' => 'required|numeric|min:0.01',
+        ]);
+
+        // only admins can add balance to other users
+        if (!Auth::user()->is_admin) {
+            return response()->json([
+                'message' => 'Somente administradores podem realizar recarga',
+            ], 403);
+        }
+
+        $targetUser = User::find($id);
+        if (!$targetUser) {
+            return response()->json(['message' => 'Usuário não encontrado'], 404);
+        }
+
+        // prevent adding balance to another admin
+        if ($targetUser->is_admin) {
+            return response()->json([
+                'message' => 'Não é possível adicionar saldo a um administrador',
+            ], 403);
+        }
+
+        $targetUser->balance += $request->amount;
+        $targetUser->save();
+
+        Transactions::create([
+            'amount' => $request->amount,
+            'type'   => 'credit',
+            'user_id' => $targetUser->id,
+        ]);
+
+        return response()->json([
+            'message' => 'Saldo adicionado com sucesso',
+            'balance' => $targetUser->balance,
         ]);
     }
 
