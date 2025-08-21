@@ -121,6 +121,30 @@ class UsersController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        if (! auth()->user()->is_admin) {
+            return response()->json([
+                'message' => 'Apenas administradores podem realizar essa ação',
+            ], 403);
+        }
+
+        if (auth()->id() === $id) {
+            return response()->json([
+                'message' => 'Administradores não podem deletar a si mesmos',
+            ], 400);
+        }
+
+        $user = User::find($id);
+
+        if (! $user) {
+            return response()->json([
+                'message' => 'Usuário não encontrado',
+            ], 404);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'message' => 'Usuário deletado com sucesso',
+        ]);
     }
 }
