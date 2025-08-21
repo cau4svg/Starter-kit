@@ -62,6 +62,19 @@ class UsersController extends Controller
 
             $data = $request->only(['name', 'email', 'cellphone', 'password', 'bearer_apibrasil']);
 
+            // valida se o e-mail já está em uso por outro usuário
+            if (! empty($data['email']) && $data['email'] !== $user->email) {
+                $exists = User::where('email', $data['email'])
+                    ->where('id', '!=', $user->id)
+                    ->exists();
+
+                if ($exists) {
+                    return response()->json([
+                        'error' => 'E-mail já está em uso',
+                    ], 422);
+                }
+            }
+
             // Se veio senha, criptografa
             if (! empty($data['password'])) {
                 $data['password'] = bcrypt($data['password']);
