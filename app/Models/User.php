@@ -86,24 +86,17 @@ class User extends Authenticatable
     }
 
 
-    //TESTE
     protected static function boot()
     {
         parent::boot();
 
-        static::creating(function ($model) {
-            if (empty($model->id)) {
-                $model->id = (string) Str::uuid();
-            }
-        });
-
-        parent::boot();
-
         static::creating(function ($user) {
-            if (User::count() === 0) {
+            if (empty($user->id)) {
+                $user->id = (string) Str::uuid();
+            }
+
+            if (self::count() === 0) {
                 $user->is_admin = true; // Primeiro usuário
-            } else {
-                $user->is_admin = false; // Todos os outros
             }
         });
     }
