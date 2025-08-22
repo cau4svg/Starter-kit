@@ -81,7 +81,7 @@ class DevicesController extends Controller
         return response()->json($response->json(), $response->status());
     }
 
-    public function destroy(Request $request)
+    public function destroy()
     {
         $user = Auth::user();
 
