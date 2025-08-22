@@ -6,6 +6,7 @@ use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\UsersController;
 use App\Http\Controllers\DevicesController;
+use App\Http\Controllers\GatewayController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,7 +18,7 @@ Route::post('/login', [AuthController::class, 'login'])->name('login');
 Route::middleware('auth:sanctum')->group(function () {
 
     // informações do usuário logado
-    Route::get('/user', fn (Request $request) => $request->user());
+    Route::get('/user', fn(Request $request) => $request->user());
     Route::get('/profile', [AuthController::class, 'profile']);
     Route::post('/logout', [AuthController::class, 'logout']);
 
@@ -35,6 +36,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/devices', [DevicesController::class, 'index']);
     Route::post('/devices/store', [DevicesController::class, 'store']);
 
+    // gateway information
+    Route::get('/gateway/servers', [GatewayController::class, 'servers']);
+    Route::get('/gateway/apis', [GatewayController::class, 'apis']);
+
+
     // preços - acesso restrito a administradores
     Route::middleware('admin')->apiResource('prices', PricesController::class);
 
@@ -45,39 +51,39 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::any('/consult/{name}', 'default')->name('request_default');
 
         Route::prefix('whatsapp')->group(function () {
-            Route::post('{action}', fn (Request $req, $action) => app(RequestsController::class)->default($req, "whatsapp/$action"));
+            Route::post('{action}', fn(Request $req, $action) => app(RequestsController::class)->default($req, "whatsapp/$action"));
         });
 
         Route::post('/correios/{name}', 'default');
 
         Route::prefix('geolocation')->group(function () {
-            Route::post('{action}', fn (Request $req, $action) => app(RequestsController::class)->default($req, "geolocation/$action"));
+            Route::post('{action}', fn(Request $req, $action) => app(RequestsController::class)->default($req, "geolocation/$action"));
         });
 
         Route::prefix('weather')->group(function () {
-            Route::post('{action}', fn (Request $req, $action) => app(RequestsController::class)->default($req, "weather/$action"));
+            Route::post('{action}', fn(Request $req, $action) => app(RequestsController::class)->default($req, "weather/$action"));
         });
 
         Route::any(
             '/cep/{action?}',
-            fn (Request $req, $action = null) => app(RequestsController::class)->default($req, $action ? 'cep/'.trim($action, '/') : 'cep')
+            fn(Request $req, $action = null) => app(RequestsController::class)->default($req, $action ? 'cep/' . trim($action, '/') : 'cep')
         )->where('action', '.*');
 
-        Route::post('/geomatrix', fn (Request $req) => app(RequestsController::class)->default($req, 'geomatrix/distance'));
+        Route::post('/geomatrix', fn(Request $req) => app(RequestsController::class)->default($req, 'geomatrix/distance'));
 
         Route::any(
             '/translate/{action?}',
-            fn (Request $req, $action = null) => app(RequestsController::class)->default($req, $action ? 'translate/'.trim($action, '/') : 'translate')
+            fn(Request $req, $action = null) => app(RequestsController::class)->default($req, $action ? 'translate/' . trim($action, '/') : 'translate')
         )->where('action', '.*');
 
         Route::any(
             '/ddd/{action?}',
-            fn (Request $req, $action = null) => app(RequestsController::class)->default($req, $action ? 'ddd/'.trim($action, '/') : 'ddd')
+            fn(Request $req, $action = null) => app(RequestsController::class)->default($req, $action ? 'ddd/' . trim($action, '/') : 'ddd')
         )->where('action', '.*');
 
         Route::any(
             '/database/{action?}',
-            fn (Request $req, $action = null) => app(RequestsController::class)->default($req, $action ? 'database/'.trim($action, '/') : 'database')
+            fn(Request $req, $action = null) => app(RequestsController::class)->default($req, $action ? 'database/' . trim($action, '/') : 'database')
         )->where('action', '.*');
     });
 });
