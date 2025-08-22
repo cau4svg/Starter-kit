@@ -62,5 +62,31 @@ class DevicesTest extends TestCase
                 'devices' => [],
             ]);
     }
+
+    public function test_search_updates_device(): void
+    {
+        Http::fake([
+            'https://gateway.apibrasil.io/api/v2/devices/123/search' => Http::response([
+                'device' => ['device_token' => '123'],
+            ], 200),
+        ]);
+
+        $user = User::create([
+            'name' => 'User3',
+            'email' => 'user3@example.com',
+            'password' => bcrypt('password'),
+            'cellphone' => '555555555',
+            'balance' => 0,
+            'bearer_apibrasil' => 'token',
+        ]);
+
+        $response = $this->actingAs($user, 'sanctum')
+            ->postJson('/api/devices/123/search');
+
+        $response->assertStatus(200)
+            ->assertJson([
+                'device' => ['device_token' => '123'],
+            ]);
+    }
 }
 

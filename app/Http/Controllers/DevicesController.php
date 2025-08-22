@@ -14,7 +14,7 @@ class DevicesController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user || !$user->bearer_apibrasil) {
+        if (! $user || ! $user->bearer_apibrasil) {
             return response()->json([
                 'error' => true,
                 'message' => 'Token API Brasil não configurado',
@@ -23,7 +23,7 @@ class DevicesController extends Controller
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $user->bearer_apibrasil,
+            'Authorization' => 'Bearer '.$user->bearer_apibrasil,
         ])->get("{$this->baseUrl}/devices");
 
         return response()->json($response->json(), $response->status());
@@ -43,10 +43,10 @@ class DevicesController extends Controller
 
         // Se existir, adiciona no header de saída
         if ($secretKey) {
-            $headers[] = 'SecretKey: ' . $secretKey;
+            $headers[] = 'SecretKey: '.$secretKey;
         }
 
-        if (!$user || !$user->bearer_apibrasil) {
+        if (! $user || ! $user->bearer_apibrasil) {
             return response()->json([
                 'error' => true,
                 'message' => 'Token API Brasil não configurado',
@@ -55,9 +55,47 @@ class DevicesController extends Controller
 
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . $user->bearer_apibrasil,
+            'Authorization' => 'Bearer '.$user->bearer_apibrasil,
             'SecretKey' => $secretKey,
         ])->post("{$this->baseUrl}/devices/store", $request->all());
+
+        return response()->json($response->json(), $response->status());
+    }
+
+    public function search(Request $request)
+    {
+        $user = Auth::user();
+
+        if (! $user || ! $user->bearer_apibrasil) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Token API Brasil não configurado',
+            ], 400);
+        }
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer '.$user->bearer_apibrasil,
+        ])->post("{$this->baseUrl}/devices/search", $request->all());
+
+        return response()->json($response->json(), $response->status());
+    }
+
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+
+        if (! $user || ! $user->bearer_apibrasil) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Token API Brasil não configurado',
+            ], 400);
+        }
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer '.$user->bearer_apibrasil,
+        ])->delete("{$this->baseUrl}/devices/destroy", $request->all());
 
         return response()->json($response->json(), $response->status());
     }
