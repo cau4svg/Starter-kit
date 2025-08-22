@@ -71,7 +71,6 @@ class RequestsController extends Controller
             }
             $devicetoken = $devicetoken ? trim($devicetoken) : null;
 
-
             // Se o nome do serviço não foi informado, tenta deduzir pela URL
             if (!$serviceName) {
                 $names = Prices::pluck('name')->toArray();
