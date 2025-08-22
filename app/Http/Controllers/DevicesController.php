@@ -80,4 +80,23 @@ class DevicesController extends Controller
 
         return response()->json($response->json(), $response->status());
     }
+
+    public function destroy(Request $request)
+    {
+        $user = Auth::user();
+
+        if (!$user || !$user->bearer_apibrasil) {
+            return response()->json([
+                'error' => true,
+                'message' => 'Token API Brasil não configurado',
+            ], 400);
+        }
+
+        $response = Http::withHeaders([
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . $user->bearer_apibrasil,
+        ])->delete("{$this->baseUrl}/devices/destroy");
+
+        return response()->json($response->json(), $response->status());
+    }
 }

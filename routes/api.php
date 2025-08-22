@@ -37,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/', 'index');
         Route::post('store', 'store');
         Route::post('search', 'search');
+        Route::delete('destroy', 'destroy');
     });
 
     // gateway information
