@@ -72,6 +72,22 @@ class RequestsController extends Controller
             }
             $devicetoken = $devicetoken ? trim($devicetoken) : null;
 
+            // --- capturar e normalizar o SecretKey recebido ---
+            $secretKey = request()->header('SecretKey'); // string|array|null
+
+            // Se vier como array (pode acontecer), pegue o primeiro
+            if (is_array($secretKey)) {
+                $secretKey = $secretKey[0] ?? null;
+            }
+
+            // Normaliza
+            $secretKey = $secretKey ? trim($secretKey) : null;
+
+            // Se existir, adiciona no header de saída
+            if ($secretKey) {
+                $headers[] = 'SecretKey: ' . $secretKey;
+            }
+
 
             // Se o nome do serviço não foi informado, tenta deduzir pela URL
             if (!$serviceName) {
