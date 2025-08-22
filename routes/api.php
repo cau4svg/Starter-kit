@@ -33,8 +33,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/users/{id}/add-balance', [TransactionsController::class, 'addBalanceToUser']);
 
     // devices
-    Route::get('/devices', [DevicesController::class, 'index']);
-    Route::post('/devices/store', [DevicesController::class, 'store']);
+    Route::prefix('devices')->controller(DevicesController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('store', 'store');
+        Route::post('{device}/search', 'search');
+    });
 
     // gateway information
     Route::get('/gateway/servers', [GatewayController::class, 'servers']);
