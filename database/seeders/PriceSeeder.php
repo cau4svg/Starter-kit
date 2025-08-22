@@ -26,6 +26,7 @@ class PriceSeeder extends Seeder
             ['name' => 'database', 'value_buy' => 1.5, 'value_sell' => 2],
             ['name' => 'cnpj', 'value_buy' => 1.5, 'value_sell' => 2],
             ['name' => 'cpf', 'value_buy' => 1.6, 'value_sell' => 2.1],
+            ['name' => 'geolocation', 'value_buy' => 1.5, 'value_sell' => 2.5],
         ];
 
         foreach ($prices as $price) {
