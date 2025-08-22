@@ -47,7 +47,6 @@ class RequestsController extends Controller
             $user = User::findOrFail(Auth::user()->id);
 
             $bearerAPIBrasil = $user->bearer_apibrasil; // token da API Brasil salvo no usuário
-            $devicetoken = $user->device_token;         // device token salvo no usuário
 
             // Define headers básicos da requisição
 

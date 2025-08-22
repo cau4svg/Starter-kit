@@ -5,6 +5,7 @@ use App\Http\Controllers\PricesController;
 use App\Http\Controllers\RequestsController;
 use App\Http\Controllers\TransactionsController;
 use App\Http\Controllers\UsersController;
+use App\Http\Controllers\DevicesController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,6 +30,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transactions', [TransactionsController::class, 'index']);
     Route::post('/add-balance', [TransactionsController::class, 'addBalance']);
     Route::post('/users/{id}/add-balance', [TransactionsController::class, 'addBalanceToUser']);
+
+    // devices
+    Route::get('/devices', [DevicesController::class, 'index']);
+    Route::post('/devices/store', [DevicesController::class, 'store']);
 
     // preços - acesso restrito a administradores
     Route::middleware('admin')->apiResource('prices', PricesController::class);
