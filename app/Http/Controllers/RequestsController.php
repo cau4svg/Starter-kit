@@ -326,5 +326,4 @@ class RequestsController extends Controller
 
         return $url;
     }
-
 }
