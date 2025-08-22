@@ -57,7 +57,7 @@ class User extends Authenticatable
         'cellphone',
         'bearer_apibrasil',
         'is_admin',
-        'balance', 
+        'balance',
     ];
 
 
