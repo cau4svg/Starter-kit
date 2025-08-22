@@ -36,7 +36,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::prefix('devices')->controller(DevicesController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('store', 'store');
-        Route::post('{device}/search', 'search');
+        Route::post('search', 'search');
     });
 
     // gateway information

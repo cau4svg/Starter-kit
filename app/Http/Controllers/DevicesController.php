@@ -62,19 +62,9 @@ class DevicesController extends Controller
         return response()->json($response->json(), $response->status());
     }
 
-    public function search(Request $request, string $device)
+    public function search(Request $request,)
     {
         $user = Auth::user();
-        $secretKey = request()->header('SecretKey'); // string|array|null
-
-        if (is_array($secretKey)) {
-            $secretKey = $secretKey[0] ?? null;
-        }
-        $secretKey = $secretKey ? trim($secretKey) : null;
-
-        if ($secretKey) {
-            $headers[] = 'SecretKey: ' . $secretKey;
-        }
 
         if (!$user || !$user->bearer_apibrasil) {
             return response()->json([
@@ -86,8 +76,7 @@ class DevicesController extends Controller
         $response = Http::withHeaders([
             'Content-Type' => 'application/json',
             'Authorization' => 'Bearer ' . $user->bearer_apibrasil,
-            'SecretKey' => $secretKey,
-        ])->post("{$this->baseUrl}/devices/{$device}/search", $request->all());
+        ])->post("{$this->baseUrl}/devices/search", $request->all());
 
         return response()->json($response->json(), $response->status());
     }
