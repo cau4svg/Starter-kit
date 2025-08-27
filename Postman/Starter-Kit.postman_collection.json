@@ -1,0 +1,3037 @@
+{
+	"info": {
+		"_postman_id": "daa5aa73-ee2c-4b53-858e-3d90bc2338d4",
+		"name": "Starter-Kit",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47430802",
+		"_collection_link": "https://artursvg-5353704.postman.co/workspace/Artur's-Workspace~4cb90d56-e715-4077-86c8-e9c7e6ffbb97/collection/47430802-daa5aa73-ee2c-4b53-858e-3d90bc2338d4?action=share&source=collection_link&creator=47430802"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Cadastro",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "\r\n{\r\n  \"name\": \"arturfodao\",\r\n  \"email\": \"arturfodao@teste.com\",\r\n  \"cellphone\": \"11987654327\",\r\n  \"password\": \"finaltest2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/register",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const response = pm.response.json();\r",
+									"pm.environment.set(\"BEARER_TOKEN\", response.token);\r",
+									"//pm.environment.set(\"USER_ID\", response.user.id);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "019899bb-87e4-71c2-9f20-0de304c416c3|OqJsxBAb2tVusz12xNC0GOvLrfsxjOpM3WUB7QLT84e6c41f",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"artur@teste.com\",\r\n    \"password\": \"finaltest2\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/login",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 019899de-07d9-7243-99d5-6f35d2f410f7|Ufk2GWJyXjFLnyPS6unN7jzH5iG2388mxog95sIs04c16765",
+								"description": "\tToken de autenticação recebido no login",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/logout",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Requests",
+			"item": [
+				{
+					"name": "APIs Créditos",
+					"item": [
+						{
+							"name": "Veiculos",
+							"item": [
+								{
+									"name": "agregado-basica",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"placa\": \"ABC1234\",\r\n    \"tipo\": \"agregados-basica\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/agregado-basica",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"agregado-basica"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "agregado-basica",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"placa\": \"ABC1234\",\r\n    \"tipo\": \"agregados-basica\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{HOST}}/api/consult/vehicles",
+													"host": [
+														"{{HOST}}"
+													],
+													"path": [
+														"api",
+														"consult",
+														"vehicles"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": [
+												{
+													"key": "Host",
+													"value": "localhost:8000"
+												},
+												{
+													"key": "Connection",
+													"value": "close"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "PHP/8.4.11"
+												},
+												{
+													"key": "Cache-Control",
+													"value": "no-cache, private"
+												},
+												{
+													"key": "Date",
+													"value": "Mon, 11 Aug 2025 20:00:57 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"data\": {\n        \"user\": {\n            \"first_name\": \"Artur\",\n            \"email\": \"arturumbelinov@gmail.com\",\n            \"cellphone\": \"31983279368\",\n            \"notification\": \"yes\"\n        },\n        \"balance\": \"197,800\",\n        \"error\": false,\n        \"message\": \"Dados válidos! Você foi tarifado em R$ 0.16!\",\n        \"homolog\": \"false\",\n        \"data\": {\n            \"placa\": \"ABC1234\",\n            \"chassi\": \"9BWZZZ32ZGP246344\",\n            \"fabricante\": \"VOLKSWAGEN\",\n            \"modelo\": \"SANTANA\",\n            \"ano_fabricacao\": 1986,\n            \"ano_modelo\": 1986,\n            \"combustivel\": \"ALCOOL\",\n            \"tipo_veiculo\": \"Nao Identificado\",\n            \"especie\": \"Desconhecido\",\n            \"cor\": \"VERMELHA\",\n            \"tipo_carroceria\": \"NAO APLICAVEL\",\n            \"nacionalidade\": \"NACIONAL\",\n            \"numero_motor\": \"\",\n            \"potencia\": 94,\n            \"carga\": null,\n            \"numero_carroceria\": null,\n            \"numero_caixa_cambio\": null,\n            \"numero_eixo_traseiro\": null,\n            \"numero_terceiro_eixo\": null,\n            \"quantidade_eixo\": 0,\n            \"quantidade_portas\": 0,\n            \"cilindradas\": \"0\",\n            \"capacidade_max_tracao\": 0,\n            \"peso_bruto_total\": 0,\n            \"quantidade_lugares\": 0,\n            \"tipo_montagem\": null,\n            \"uf_jurisdicao\": \"PR\",\n            \"uf_faturado\": \"PR\",\n            \"cidade\": \"Lobato\"\n        }\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "agregado-propria",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"placa\": \"ABC1234\",\r\n    \"tipo\": \"agregados-propria\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/agregado-propia",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"agregado-propia"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "agregado-propria",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"placa\": \"ABC1234\",\r\n    \"tipo\": \"agregados-propria\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{HOST}}/api/consult/vehicles",
+													"host": [
+														"{{HOST}}"
+													],
+													"path": [
+														"api",
+														"consult",
+														"vehicles"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": [
+												{
+													"key": "Host",
+													"value": "localhost:8000"
+												},
+												{
+													"key": "Connection",
+													"value": "close"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "PHP/8.4.11"
+												},
+												{
+													"key": "Cache-Control",
+													"value": "no-cache, private"
+												},
+												{
+													"key": "Date",
+													"value": "Mon, 11 Aug 2025 20:03:54 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"data\": {\n        \"user\": {\n            \"first_name\": \"Artur\",\n            \"email\": \"arturumbelinov@gmail.com\",\n            \"cellphone\": \"31983279368\",\n            \"notification\": \"yes\"\n        },\n        \"balance\": \"197,300\",\n        \"error\": false,\n        \"message\": \"Dados válidos! Você foi tarifado em R$ 0.08!\",\n        \"homolog\": \"false\",\n        \"data\": {\n            \"placa\": \"ABC1234\",\n            \"placaMercosul\": \"ABC1C34\",\n            \"chassi\": \"9BWZZZ32ZGP246344\",\n            \"fabricante\": \"VOLKSWAGEN\",\n            \"marca\": \"VOLKSWAGEN\",\n            \"marcaDetalhes\": {\n                \"nome\": \"VOLKSWAGEN\",\n                \"fipeId\": 59\n            },\n            \"modelo\": \"SANTANA\",\n            \"modeloDetalhes\": {\n                \"nome\": \"SANTANA\",\n                \"sintetico\": true\n            },\n            \"versao\": \"SANTANA ALC.\",\n            \"ano_fabricacao\": 1986,\n            \"ano_modelo\": 1986,\n            \"motor_descricao\": null,\n            \"transmissao_descricao\": null,\n            \"combustivel\": \"ALCOOL\",\n            \"tipo_veiculo\": \"Nao Identificado\",\n            \"especie\": \"Desconhecido\",\n            \"cor\": \"VERMELHA\",\n            \"tipo_carroceria\": \"NAO APLICAVEL\",\n            \"nacionalidade\": \"NACIONAL\",\n            \"numero_motor\": \"\",\n            \"potencia\": 94,\n            \"carga\": null,\n            \"numero_carroceria\": null,\n            \"numero_caixa_cambio\": null,\n            \"numero_eixo_traseiro\": null,\n            \"numero_terceiro_eixo\": null,\n            \"quantidade_eixo\": 0,\n            \"quantidade_portas\": 0,\n            \"cilindradas\": \"0\",\n            \"capacidade_max_tracao\": 0,\n            \"peso_bruto_total\": 0,\n            \"quantidade_lugares\": 0,\n            \"tipo_montagem\": null,\n            \"uf_jurisdicao\": \"PR\",\n            \"cidade\": \"Lobato\",\n            \"pais_fabricacao\": \"Brasil\",\n            \"documento_faturado\": \"76564624000101\",\n            \"tipo_faturado\": null,\n            \"uf_faturado\": \"PR\",\n            \"especificacoes\": [\n                {\n                    \"codigoFipe\": \"005062-8\",\n                    \"informacoes\": [\n                        {\n                            \"dimensoes\": [\n                                {\n                                    \"descricao\": \"Largura\",\n                                    \"valor\": \"1695\"\n                                },\n                                {\n                                    \"descricao\": \"Comprimento\",\n                                    \"valor\": \"4527\"\n                                }\n                            ]\n                        },\n                        {\n                            \"geral\": [\n                                {\n                                    \"descricao\": \"Porta Malas\",\n                                    \"valor\": \"480 litros\"\n                                }\n                            ]\n                        }\n                    ]\n                }\n            ],\n            \"acessorios\": [],\n            \"opniao_dono\": []\n        }\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "Fipe",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"placa\": \"RVO0A06\",\r\n    \"tipo\": \"fipe\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/fipe",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"fipe"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Fipe",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"placa\": \"RVO0A06\",\r\n    \"tipo\": \"fipe\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{HOST}}/api/consult/vehicles",
+													"host": [
+														"{{HOST}}"
+													],
+													"path": [
+														"api",
+														"consult",
+														"vehicles"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": [
+												{
+													"key": "Host",
+													"value": "localhost:8000"
+												},
+												{
+													"key": "Connection",
+													"value": "close"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "PHP/8.4.11"
+												},
+												{
+													"key": "Cache-Control",
+													"value": "no-cache, private"
+												},
+												{
+													"key": "Date",
+													"value": "Mon, 11 Aug 2025 21:21:08 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"data\": {\n        \"user\": {\n            \"first_name\": \"Artur\",\n            \"email\": \"arturumbelinov@gmail.com\",\n            \"cellphone\": \"31983279368\",\n            \"notification\": \"yes\"\n        },\n        \"balance\": \"177,070\",\n        \"error\": false,\n        \"message\": \"Dados válidos! Você foi tarifado em R$ 0.06!\",\n        \"homolog\": \"false\",\n        \"data\": [\n            {\n                \"valor\": 59480,\n                \"codigoFipe\": \"025290-5\",\n                \"anoModelo\": 2023,\n                \"anoFabricacao\": 2022,\n                \"mesReferencia\": \"agosto de 2025\",\n                \"marca\": \"Renault\",\n                \"modelo\": \"LOGAN Zen Flex 1.0 12V 4p Mec.\",\n                \"url\": \"http://veiculos.fipe.org.br/?carro/renault/08-2025/025290-5/2023/f/1tqmc9tnftpn\",\n                \"principal\": true,\n                \"historico\": [\n                    {\n                        \"mes\": \"2025-08\",\n                        \"valor\": 59480\n                    },\n                    {\n                        \"mes\": \"2025-07\",\n                        \"valor\": 59714\n                    },\n                    {\n                        \"mes\": \"2025-06\",\n                        \"valor\": 60432\n                    },\n                    {\n                        \"mes\": \"2025-05\",\n                        \"valor\": 60448\n                    },\n                    {\n                        \"mes\": \"2025-04\",\n                        \"valor\": 61423\n                    },\n                    {\n                        \"mes\": \"2025-02\",\n                        \"valor\": 61211\n                    },\n                    {\n                        \"mes\": \"2025-01\",\n                        \"valor\": 60933\n                    }\n                ]\n            }\n        ]\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "renainf",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"placa\": \"OQH3A65\",\r\n    \"tipo\": \"renainf\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/renainf",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"renainf"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "renainf",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"placa\": \"OQH3A65\",\r\n    \"tipo\": \"renainf\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{HOST}}/api/consult/vehicles",
+													"host": [
+														"{{HOST}}"
+													],
+													"path": [
+														"api",
+														"consult",
+														"vehicles"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": [
+												{
+													"key": "Host",
+													"value": "localhost:8000"
+												},
+												{
+													"key": "Connection",
+													"value": "close"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "PHP/8.4.11"
+												},
+												{
+													"key": "Cache-Control",
+													"value": "no-cache, private"
+												},
+												{
+													"key": "Date",
+													"value": "Mon, 11 Aug 2025 21:07:07 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"data\": {\n        \"user\": {\n            \"first_name\": \"Artur\",\n            \"email\": \"arturumbelinov@gmail.com\",\n            \"cellphone\": \"31983279368\",\n            \"notification\": \"yes\"\n        },\n        \"balance\": \"180,700\",\n        \"error\": false,\n        \"message\": \"Dados válidos! Você foi tarifado em R$ 3.45!\",\n        \"homolog\": \"false\",\n        \"data\": {\n            \"alerta\": \"\",\n            \"placa\": \"OQH3A65\",\n            \"quantidade_ocorrencias\": \"0\",\n            \"quantidade_ocorrencias_total\": \"0\",\n            \"registros\": []\n        }\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "Placa dados",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"placa\": \"OQH3A65\",\r\n    \"homolog\": false\r\n\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/placa",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"placa"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Placa-dados",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"placa\": \"OQH3A65\",\r\n    \"homolog\": false\r\n\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{HOST}}/api/consult/vehicles-dados",
+													"host": [
+														"{{HOST}}"
+													],
+													"path": [
+														"api",
+														"consult",
+														"vehicles-dados"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": [
+												{
+													"key": "Host",
+													"value": "localhost:8000"
+												},
+												{
+													"key": "Connection",
+													"value": "close"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "PHP/8.4.11"
+												},
+												{
+													"key": "Cache-Control",
+													"value": "no-cache, private"
+												},
+												{
+													"key": "Date",
+													"value": "Mon, 11 Aug 2025 20:49:21 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"data\": {\n        \"user\": {\n            \"first_name\": \"Artur\",\n            \"email\": \"arturumbelinov@gmail.com\",\n            \"cellphone\": \"31983279368\",\n            \"notification\": \"yes\"\n        },\n        \"balance\": \"184,640\",\n        \"error\": false,\n        \"message\": \"Placa válida! Você foi tarifado em R$ 0.08!\",\n        \"homolog\": false,\n        \"data\": {\n            \"MARCA\": \"FORD\",\n            \"MODELO\": \"FORD/FIESTA FLEX\",\n            \"SUBMODELO\": \"FORD/FIESTA\",\n            \"VERSAO\": \"FLEX\",\n            \"ano\": \"2013\",\n            \"anoModelo\": \"2014\",\n            \"chassi\": \"*****0E8008912\",\n            \"codigoRetorno\": \"0\",\n            \"codigoSituacao\": \"0\",\n            \"cor\": \"Preta\",\n            \"data\": \"11/08/2025 17:49:19\",\n            \"dataatualizacaoalarme\": \"Descontinuado\",\n            \"dataatualizacaocaracteristicasveiculo\": \"Descontinuado\",\n            \"dataatualizacaoroubofurto\": \"Descontinuado\",\n            \"limite_restricao_trib\": \"Descontinuado\",\n            \"placa\": \"OQH3065\",\n            \"placa_modelo_antigo\": \"OQH3065\",\n            \"placa_modelo_novo\": \"OQH3A65\",\n            \"placa_nova\": \"f\",\n            \"extra\": {\n                \"ano_fabricacao\": \"2013\",\n                \"ano_modelo\": \"2014\",\n                \"caixa_cambio\": \"\",\n                \"cap_maxima_tracao\": \"0\",\n                \"capacidade_carga\": \"0\",\n                \"chassi\": \"9BFZF55A0E8008912\",\n                \"cilindradas\": \"999\",\n                \"combustivel\": \"Alcool / Gasolina\",\n                \"cor_veiculo\": {\n                    \"cor\": \"Preta\"\n                },\n                \"data_atualizacao\": \"\",\n                \"eixos\": \"2\",\n                \"faturado\": \"02342252000205\",\n                \"tipo_doc_faturado\": {\n                    \"tipo_pessoa\": \"Juridica\"\n                },\n                \"uf_faturado\": \"MG\",\n                \"tipo_doc_prop\": {\n                    \"tipo_pessoa\": \"Juridica\"\n                },\n                \"uf_placa\": \"MG\",\n                \"uf\": \"MG\",\n                \"linha\": \"42648316\",\n                \"motor\": \"SM9AE8008912\",\n                \"municipio\": {\n                    \"municipio\": \"DIVINOPOLIS\",\n                    \"uf\": \"MG\"\n                },\n                \"carroceria\": null,\n                \"nacionalidade\": \"Nacional\",\n                \"peso_bruto_total\": \"151\",\n                \"placa\": \"OQH3065\",\n                \"placa_modelo_antigo\": \"OQH3065\",\n                \"placa_modelo_novo\": \"OQH3A65\",\n                \"placa_nova\": \"f\",\n                \"potencia\": \"73\",\n                \"quantidade_passageiro\": \"5\",\n                \"renavam\": null,\n                \"marca_modelo\": {\n                    \"modelo\": \"FORD/FIESTA FLEX\",\n                    \"marca\": \"FORD\",\n                    \"segmento\": \"Auto\",\n                    \"versao\": \"FLEX\"\n                },\n                \"restricao1\": {\n                    \"restricao\": \"\"\n                },\n                \"restricao2\": {\n                    \"restricao\": \"\"\n                },\n                \"restricao3\": {\n                    \"restricao\": \"\"\n                },\n                \"restricao4\": {\n                    \"restricao\": \"\"\n                }\n            },\n            \"modelo\": \"FORD/FIESTA FLEX\",\n            \"marca\": \"FORD\",\n            \"municipio\": \"DIVINOPOLIS\",\n            \"uf\": \"MG\",\n            \"uf_placa\": \"MG\",\n            \"combustivel\": \"Alcool / Gasolina\",\n            \"potencia\": \"73\",\n            \"capacidade_carga\": \"0\",\n            \"nacionalidade\": {\n                \"nacionalidade\": \"Nacional\"\n            },\n            \"linha\": \"42648316\",\n            \"carroceria\": null,\n            \"caixa_cambio\": \"\",\n            \"eixo_traseiro_dif\": \"\",\n            \"terceiro_eixo\": \"\",\n            \"ano_modelo\": \"2014\",\n            \"tipo_veiculo\": {\n                \"tipo_veiculo\": \"Automovel\"\n            },\n            \"marca_modelo\": {\n                \"modelo\": \"FORD/FIESTA FLEX\",\n                \"marca\": \"FORD\",\n                \"segmento\": \"Auto\",\n                \"versao\": \"FLEX\"\n            },\n            \"cor_veiculo\": {\n                \"cor\": \"Preta\"\n            },\n            \"quantidade_passageiro\": \"5\",\n            \"situacao_chassi\": \"N\",\n            \"eixos\": \"2\",\n            \"tipo_montagem\": \"1\",\n            \"ultima_atualizacao\": \"2013-07-11 00:00:00\",\n            \"cilindradas\": \"999\",\n            \"situacao_veiculo\": \"S\",\n            \"listamodelo\": [\n                [\n                    \"FORD/FIESTA\",\n                    \"FLEX\"\n                ]\n            ],\n            \"server\": \"https://apiveiculos.com.br\",\n            \"version\": \"3.1\",\n            \"info\": \"11/08/2025 17:49:19\",\n            \"logo\": \"https://apiveiculos.apibrasil.com.br/static/logos/ford.png\",\n            \"status_code\": 200,\n            \"fipe\": {\n                \"dados\": []\n            },\n            \"multas\": {\n                \"dados\": []\n            }\n        }\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "roubo-furto",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"placa\": \"OQH3A65\",\r\n    \"tipo\": \"roubo-furto\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/roubo-furto",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"roubo-furto"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "roubo-furto",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"placa\": \"OQH3A65\",\r\n    \"tipo\": \"roubo-furto\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{HOST}}/api/consult/vehicles",
+													"host": [
+														"{{HOST}}"
+													],
+													"path": [
+														"api",
+														"consult",
+														"vehicles"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": [
+												{
+													"key": "Host",
+													"value": "localhost:8000"
+												},
+												{
+													"key": "Connection",
+													"value": "close"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "PHP/8.4.11"
+												},
+												{
+													"key": "Cache-Control",
+													"value": "no-cache, private"
+												},
+												{
+													"key": "Date",
+													"value": "Mon, 11 Aug 2025 21:03:12 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"data\": {\n        \"user\": {\n            \"first_name\": \"Artur\",\n            \"email\": \"arturumbelinov@gmail.com\",\n            \"cellphone\": \"31983279368\",\n            \"notification\": \"yes\"\n        },\n        \"balance\": \"184,560\",\n        \"error\": false,\n        \"message\": \"Dados válidos! Você foi tarifado em R$ 3.86!\",\n        \"homolog\": \"false\",\n        \"data\": {\n            \"situacao\": \"CIRCULACAO\",\n            \"ocorrencia\": \"VEICULO NAO INDICA OCORRENCIA DE ROUBO/FURTO\",\n            \"placa\": \"OQH3A65\",\n            \"municipio\": \"BELO HORIZONTE\",\n            \"uf\": \"MG\",\n            \"renavam\": \"00548928053\",\n            \"documento\": \"\",\n            \"ultima_atualizacao\": \"\",\n            \"chassi\": \"9BFZF55A0E8008912\",\n            \"remarcacao_do_chassi\": \"NORMAL\",\n            \"montagem\": \"COMPLETA\",\n            \"motor\": \"SM9AE8008912\",\n            \"caixa_cambio\": \"\",\n            \"num_carroceria\": \"INEXISTENTE\",\n            \"num_eixo\": \"2\",\n            \"num_eixo_aux\": \"\",\n            \"aux\": \"\",\n            \"marca\": \"FORD/FIESTA FLEX\",\n            \"tipo_veiculo\": \"AUTOMOVEL\",\n            \"ano_fabricacao\": \"2013\",\n            \"ano_modelo\": \"2014\",\n            \"procedencia\": \"NACIONAL\",\n            \"especie\": \"PASSAGEIRO\",\n            \"combustivel\": \"ALCO/GASOL\",\n            \"cilindrada\": \"999\",\n            \"cor\": \"PRETA\",\n            \"potencia\": \"73\",\n            \"capacidade_passageiros\": \"5\",\n            \"capacidade_carga\": \"\",\n            \"cmt\": \"\",\n            \"pbt\": \"151\",\n            \"restricao\": \"\",\n            \"restricao2\": \"\",\n            \"restricao3\": \"\",\n            \"restricao4\": \"\",\n            \"restricao5\": \"\",\n            \"restricao6\": \"\",\n            \"restricao7\": \"\",\n            \"restricao8\": \"\",\n            \"restricao9\": \"\",\n            \"indicador\": {\n                \"houvedeclaracaoderouboefurto\": \"NAO\",\n                \"houverecuperacaoderouboefurto\": \"NAO\",\n                \"houvedevolucaoderouboefurto\": \"NAO\"\n            },\n            \"rouboFurto\": []\n        }\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "recall",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"placa\": \"ABC1234\",\r\n    \"tipo\": \"recall\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/recall",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"recall"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "Recall",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"placa\": \"ABC1234\",\r\n    \"tipo\": \"recall\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{HOST}}/api/consult/vehicles",
+													"host": [
+														"{{HOST}}"
+													],
+													"path": [
+														"api",
+														"consult",
+														"vehicles"
+													]
+												}
+											},
+											"status": "Bad Request",
+											"code": 400,
+											"_postman_previewlanguage": null,
+											"header": [
+												{
+													"key": "Host",
+													"value": "localhost:8000"
+												},
+												{
+													"key": "Connection",
+													"value": "close"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "PHP/8.4.11"
+												},
+												{
+													"key": "Cache-Control",
+													"value": "no-cache, private"
+												},
+												{
+													"key": "Date",
+													"value": "Mon, 11 Aug 2025 20:37:08 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Não foi possível verificar os dados junto ao fornecedor!, você não foi tarifado!\",\n    \"data\": {\n        \"error\": true,\n        \"message\": \"Não foi possível verificar os dados junto ao fornecedor!, você não foi tarifado!\",\n        \"data\": {\n            \"status\": true,\n            \"message\": \"O veículo pesquisado não possui Recall pendente ou não pertence a nenhum Recall divulgado pelas montadoras a partir de 17/03/2011. Para períodos anteriores, entre em contato diretamente com o fabricante do veículo.\"\n        }\n    }\n}"
+										}
+									]
+								},
+								{
+									"name": "leilao",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"placa\": \"ABC1234\",\r\n    \"tipo\": \"leilao\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/leilao",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"leilao"
+											]
+										}
+									},
+									"response": [
+										{
+											"name": "leilao",
+											"originalRequest": {
+												"method": "POST",
+												"header": [],
+												"body": {
+													"mode": "raw",
+													"raw": "{\r\n    \"placa\": \"ABC1234\",\r\n    \"tipo\": \"leilao\"\r\n}",
+													"options": {
+														"raw": {
+															"language": "json"
+														}
+													}
+												},
+												"url": {
+													"raw": "{{HOST}}/api/consult/roubo-furto",
+													"host": [
+														"{{HOST}}"
+													],
+													"path": [
+														"api",
+														"consult",
+														"roubo-furto"
+													]
+												}
+											},
+											"status": "OK",
+											"code": 200,
+											"_postman_previewlanguage": null,
+											"header": [
+												{
+													"key": "Host",
+													"value": "localhost:8000"
+												},
+												{
+													"key": "Connection",
+													"value": "close"
+												},
+												{
+													"key": "X-Powered-By",
+													"value": "PHP/8.4.11"
+												},
+												{
+													"key": "Cache-Control",
+													"value": "no-cache, private"
+												},
+												{
+													"key": "Date",
+													"value": "Mon, 11 Aug 2025 20:29:07 GMT"
+												},
+												{
+													"key": "Content-Type",
+													"value": "application/json"
+												},
+												{
+													"key": "Access-Control-Allow-Origin",
+													"value": "*"
+												}
+											],
+											"cookie": [],
+											"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"data\": {\n        \"user\": {\n            \"first_name\": \"Artur\",\n            \"email\": \"arturumbelinov@gmail.com\",\n            \"cellphone\": \"31983279368\",\n            \"notification\": \"yes\"\n        },\n        \"balance\": \"196,140\",\n        \"error\": false,\n        \"message\": \"Dados válidos! Você foi tarifado em R$ 11.5!\",\n        \"homolog\": \"false\",\n        \"data\": {\n            \"dados_veiculo\": {\n                \"marcamodelo\": \"VOLKSWAGEN/SANTANA CS/CD/CG\",\n                \"anofabricacaomodelo\": 1986,\n                \"placa\": \"ABC1234\",\n                \"chassi\": \"9BWZZZ32ZGP246344\",\n                \"cor\": \"VERMELHA\"\n            },\n            \"leilao\": {\n                \"descricaoretorno\": \"Consta Registro de Leilao para o veiculo informado\",\n                \"qtdleilao\": \"5\",\n                \"registro\": [\n                    {\n                        \"leiloeiro\": \"NC\",\n                        \"lote\": \"1668\",\n                        \"quantidaderegistro\": null,\n                        \"identificacaoveiculo\": null,\n                        \"idleilao\": 1,\n                        \"identificacaolote\": null,\n                        \"marcamodelo\": \"VOLKSWAGEN/SANTANA CS/CD/CG\",\n                        \"anofabricacaomodelo\": 1986,\n                        \"placa\": \"ABC1234\",\n                        \"chassi\": \"9BWZZZ32ZGP246344\",\n                        \"cor\": \"VERMELHA\",\n                        \"condicaogeraldoveiculo\": \"\",\n                        \"situacaogeraldochassi\": \"\",\n                        \"patio\": \"NC\",\n                        \"dataleilao\": \"20/01/2010\",\n                        \"comitente\": \"\",\n                        \"classificacao\": \"NAO FOI POSSIVEL CLASSIFICAR\",\n                        \"foto1\": \"NAO INFORMADO\",\n                        \"foto2\": \"NAO INFORMADO\",\n                        \"foto3\": \"NAO INFORMADO\",\n                        \"foto4\": \"NAO INFORMADO\"\n                    },\n                    {\n                        \"leiloeiro\": \"N/C\",\n                        \"lote\": \"0\",\n                        \"quantidaderegistro\": null,\n                        \"identificacaoveiculo\": null,\n                        \"idleilao\": 2,\n                        \"identificacaolote\": null,\n                        \"marcamodelo\": \"VOLKSWAGEN/SANTANA CS/CD/CG\",\n                        \"anofabricacaomodelo\": 1986,\n                        \"placa\": \"ABC1234\",\n                        \"chassi\": \"9BWZZZ32ZGP246344\",\n                        \"cor\": \"VERMELHA\",\n                        \"condicaogeraldoveiculo\": \"N/C\",\n                        \"situacaogeraldochassi\": \"NAO DIVULGADO\",\n                        \"patio\": \"NC\",\n                        \"dataleilao\": \"19/11/2014\",\n                        \"comitente\": \"SULAMERICA SEGUROS\",\n                        \"classificacao\": \"NAO FOI POSSIVEL CLASSIFICAR\",\n                        \"foto1\": \"NAO INFORMADO\",\n                        \"foto2\": \"NAO INFORMADO\",\n                        \"foto3\": \"NAO INFORMADO\",\n                        \"foto4\": \"NAO INFORMADO\"\n                    },\n                    {\n                        \"leiloeiro\": \"N/C\",\n                        \"lote\": \"0\",\n                        \"quantidaderegistro\": null,\n                        \"identificacaoveiculo\": null,\n                        \"idleilao\": 3,\n                        \"identificacaolote\": null,\n                        \"marcamodelo\": \"VOLKSWAGEN/SANTANA CS/CD/CG\",\n                        \"anofabricacaomodelo\": 1986,\n                        \"placa\": \"ABC1234\",\n                        \"chassi\": \"9BWZZZ32ZGP246344\",\n                        \"cor\": \"VERMELHA\",\n                        \"condicaogeraldoveiculo\": \"N/C\",\n                        \"situacaogeraldochassi\": \"NAO DIVULGADO\",\n                        \"patio\": \"NC\",\n                        \"dataleilao\": \"03/08/2016\",\n                        \"comitente\": \"HDI SEGUROS S/A\",\n                        \"classificacao\": \"NAO FOI POSSIVEL CLASSIFICAR\",\n                        \"foto1\": \"NAO INFORMADO\",\n                        \"foto2\": \"NAO INFORMADO\",\n                        \"foto3\": \"NAO INFORMADO\",\n                        \"foto4\": \"NAO INFORMADO\"\n                    },\n                    {\n                        \"leiloeiro\": \"N/C\",\n                        \"lote\": \"0\",\n                        \"quantidaderegistro\": null,\n                        \"identificacaoveiculo\": null,\n                        \"idleilao\": 4,\n                        \"identificacaolote\": null,\n                        \"marcamodelo\": \"VOLKSWAGEN/SANTANA CS/CD/CG\",\n                        \"anofabricacaomodelo\": 1986,\n                        \"placa\": \"ABC1234\",\n                        \"chassi\": \"9BWZZZ32ZGP246344\",\n                        \"cor\": \"VERMELHA\",\n                        \"condicaogeraldoveiculo\": \"N/C\",\n                        \"situacaogeraldochassi\": \"\",\n                        \"patio\": \"NC\",\n                        \"dataleilao\": \"01/01/0001\",\n                        \"comitente\": \"NAO DIVULGADO\",\n                        \"classificacao\": \"NAO FOI POSSIVEL CLASSIFICAR\",\n                        \"foto1\": \"NAO INFORMADO\",\n                        \"foto2\": \"NAO INFORMADO\",\n                        \"foto3\": \"NAO INFORMADO\",\n                        \"foto4\": \"NAO INFORMADO\"\n                    },\n                    {\n                        \"leiloeiro\": \"N/C\",\n                        \"lote\": \"0\",\n                        \"quantidaderegistro\": null,\n                        \"identificacaoveiculo\": null,\n                        \"idleilao\": 5,\n                        \"identificacaolote\": null,\n                        \"marcamodelo\": \"VOLKSWAGEN/SANTANA CS/CD/CG\",\n                        \"anofabricacaomodelo\": 1986,\n                        \"placa\": \"ABC1234\",\n                        \"chassi\": \"9BWZZZ32ZGP246344\",\n                        \"cor\": \"VERMELHA\",\n                        \"condicaogeraldoveiculo\": \"N/C\",\n                        \"situacaogeraldochassi\": \"NAO DIVULGADO\",\n                        \"patio\": \"NC\",\n                        \"dataleilao\": \"06/12/2022\",\n                        \"comitente\": \"4O VARA CRIMINAL DA COMARCA DE LONDRINA/PR (AUTOS: 0027401-42.2022.8.16.0014)\",\n                        \"classificacao\": \"NAO FOI POSSIVEL CLASSIFICAR\",\n                        \"foto1\": \"NAO INFORMADO\",\n                        \"foto2\": \"NAO INFORMADO\",\n                        \"foto3\": \"NAO INFORMADO\",\n                        \"foto4\": \"NAO INFORMADO\"\n                    }\n                ]\n            },\n            \"analise_risco\": {\n                \"descricaoretorno\": \"PESQUISA EFETUADA COM SUCESSO\",\n                \"indicerisco\": 1,\n                \"parecer\": \"VEICULO COM RISCO BAIXO DE COMERCIALIZACAO\"\n            }\n        }\n    }\n}"
+										}
+									]
+								}
+							]
+						},
+						{
+							"name": "CPF",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"cpf\": \"15461787673\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/consult/cpf",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"consult",
+										"cpf"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "CPF",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"cpf\": \"15461787673\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/cpf",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"cpf"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Host",
+											"value": "localhost:8000"
+										},
+										{
+											"key": "Connection",
+											"value": "close"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.4.11"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 11 Aug 2025 20:02:55 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"data\": {\n        \"error\": false,\n        \"message\": \"Requisição processada com sucesso\",\n        \"balance\": \"197,300\",\n        \"response\": {\n            \"code\": \"000\",\n            \"message\": \"Pesquisa feita com sucesso\",\n            \"date\": \"2025-08-11\",\n            \"hour\": \"20:02:54\",\n            \"revision\": \"Tempo de execução: 0.255 segundos\",\n            \"server\": \"02APIBRASIL\",\n            \"content\": {\n                \"nome\": {\n                    \"existe_informacao\": \"SIM\",\n                    \"conteudo\": {\n                        \"documento\": \"15461787673\",\n                        \"mae\": \"\",\n                        \"pai\": \"\",\n                        \"tipo_documento\": \"CPF\",\n                        \"nome\": \"ARTUR UMBELINO VIEIRA\",\n                        \"outras_grafias\": [],\n                        \"data_nascimento\": \"01/09/2006\",\n                        \"outras_datas_nascimento\": [],\n                        \"pessoa_exposta_publicamente\": {\n                            \"existe_informacao\": \"NAO\",\n                            \"relacionados\": 0,\n                            \"conteudo\": \"\"\n                        },\n                        \"idade\": \"19 anos\",\n                        \"signo\": \"\",\n                        \"obito\": \"NAO\",\n                        \"data_obito\": \"\",\n                        \"sexo\": \"M\",\n                        \"situacao_receita\": \"REGULAR\",\n                        \"situacao_receita_data\": \"2022-07-03\",\n                        \"situacao_receita_hora\": \"\",\n                        \"estrangeiro\": {\n                            \"existe_informacao\": \"NAO\",\n                            \"estrangeiro\": \"Brasileiro\",\n                            \"pais_origem\": {\n                                \"codigo\": \"\",\n                                \"origem\": \"Brasileiro\"\n                            }\n                        }\n                    }\n                },\n                \"dados_parentes\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"pessoas_contato\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"pesquisa_enderecos\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"trabalha_trabalhou\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"contato_preferencial\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"residentes_mesmo_domicilio\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"emails\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"numero_beneficio\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"alerta_participacoes\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"pesquisa_telefones\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"alerta_monitore\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                },\n                \"outros_documentos\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"rg\": \"\",\n                    \"rg_full\": {\n                        \"numero\": \"\",\n                        \"orgaoEmissor\": \"\",\n                        \"uf\": \"\"\n                    },\n                    \"ctps\": \"\",\n                    \"pis\": \"\"\n                },\n                \"protocolo\": \"1754942574868476\",\n                \"matriz_filial\": {\n                    \"existe_informacao\": \"NAO\",\n                    \"conteudo\": []\n                }\n            }\n        },\n        \"tax\": \"0.340\",\n        \"api_limit_for\": \"credit\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "CNPJ",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"cnpj\": \"44959669000180\",\r\n    \"tipo\": \"cnpj\"\r\n}\r\n\r\n//5313.5",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/consult/cnpj",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"consult",
+										"cnpj"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "CNPJ",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"cnpj\": \"44959669000180\",\r\n    \"tipo\": \"cnpj\"\r\n}\r\n\r\n//5313.5",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/cnpj",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"cnpj"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Host",
+											"value": "localhost:8000"
+										},
+										{
+											"key": "Connection",
+											"value": "close"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.4.11"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Wed, 13 Aug 2025 20:55:56 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"taxa\": 2,\n    \"debit\": 2,\n    \"saldo_atual\": 5305.5,\n    \"data\": {\n        \"error\": false,\n        \"message\": \"Requisição processada com sucesso\",\n        \"balance\": \"169,850\",\n        \"response\": {\n            \"erro\": false,\n            \"cnpj\": {\n                \"cnpj_basico\": \"44959669\",\n                \"cnpj_ordem\": \"0001\",\n                \"cnpj_dv\": \"80\",\n                \"matriz_filial\": \"1\",\n                \"nome_fantasia\": \"APIBRASIL SITES E SOFTWARE\",\n                \"situacao_cadastral\": \"02\",\n                \"data_situacao_cadastral\": \"20220121\",\n                \"motivo_situacao_cadastral\": \"00\",\n                \"nome_cidade_exterior\": \"\",\n                \"pais\": \"\",\n                \"data_inicio_atividades\": \"20220121\",\n                \"cnae_fiscal\": \"6209100\",\n                \"cnae_fiscal_secundaria\": \"\",\n                \"tipo_logradouro\": \"RUA\",\n                \"logradouro\": \"HELGA TAVEIRA DE SOUZA\",\n                \"numero\": \"646\",\n                \"complemento\": \"\",\n                \"bairro\": \"CEU AZUL\",\n                \"cep\": \"31585230\",\n                \"uf\": \"MG\",\n                \"municipio\": {\n                    \"codigo\": \"4123\",\n                    \"descricao\": \"BELO HORIZONTE\"\n                },\n                \"ddd1\": \"31\",\n                \"telefone1\": \"37123208\",\n                \"ddd2\": \"31\",\n                \"telefone2\": \"37123399\",\n                \"ddd_fax\": \"31\",\n                \"fax\": \"37123399\",\n                \"correio_eletronico\": \"MARCELO@MECALBRAS.COM.BR\",\n                \"situacao_especial\": \"\",\n                \"data_situacao_especial\": \"\",\n                \"cnpj\": \"44959669000180\",\n                \"cnae\": [\n                    {\n                        \"codigo\": \"6209100\",\n                        \"descricao\": \"Suporte técnico, manutenção e outros serviços em tecnologia da informação\"\n                    }\n                ],\n                \"socios\": [\n                    {\n                        \"cnpj\": \"44959669000180\",\n                        \"cnpj_basico\": \"44959669\",\n                        \"identificador_de_socio\": \"2\",\n                        \"nome_socio\": \"JONATHAN HENRIQUE DA SILVA MOTTA\",\n                        \"cnpj_cpf_socio\": \"***067476**\",\n                        \"qualificacao_socio\": \"49\",\n                        \"data_entrada_sociedade\": \"20220121\",\n                        \"pais\": \"\",\n                        \"representante_legal\": \"***000000**\",\n                        \"nome_representante\": \"\",\n                        \"qualificacao_representante_legal\": \"00\",\n                        \"faixa_etaria\": \"4\",\n                        \"qualificacao\": {\n                            \"codigo\": \"49\",\n                            \"descricao\": \"Sócio-Administrador\"\n                        }\n                    }\n                ],\n                \"empresa\": {\n                    \"cnpj_basico\": \"44959669\",\n                    \"razao_social\": \"APIBRASIL SITES E SOFTWARES LTDA\",\n                    \"natureza_juridica\": \"2062\",\n                    \"qualificacao_responsavel\": \"49\",\n                    \"porte_empresa\": \"03\",\n                    \"ente_federativo_responsavel\": \"\",\n                    \"capital_social\": 10000\n                },\n                \"simples\": {\n                    \"cnpj_basico\": \"44959669\",\n                    \"opcao_simples\": \"S\",\n                    \"data_opcao_simples\": \"20220121\",\n                    \"data_exclusao_simples\": \"00000000\",\n                    \"opcao_mei\": \"N\",\n                    \"data_opcao_mei\": \"00000000\",\n                    \"data_exclusao_mei\": \"00000000\"\n                },\n                \"motivo_situacao\": {\n                    \"codigo\": \"00\",\n                    \"descricao\": \"SEM MOTIVO\"\n                }\n            }\n        },\n        \"tax\": \"0.04\",\n        \"api_limit_for\": \"credit\"\n    }\n}"
+								}
+							]
+						},
+						{
+							"name": "SMS",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"number\": \"5531983279368\",\r\n    \"message\": \"olá mundo\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/consult/sms",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"consult",
+										"sms"
+									]
+								}
+							},
+							"response": [
+								{
+									"name": "SMS",
+									"originalRequest": {
+										"method": "POST",
+										"header": [],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"number\": \"5531983279368\",\r\n    \"message\": \"olá mundo\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/consult/sms",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"consult",
+												"sms"
+											]
+										}
+									},
+									"status": "OK",
+									"code": 200,
+									"_postman_previewlanguage": null,
+									"header": [
+										{
+											"key": "Host",
+											"value": "localhost:8000"
+										},
+										{
+											"key": "Connection",
+											"value": "close"
+										},
+										{
+											"key": "X-Powered-By",
+											"value": "PHP/8.4.11"
+										},
+										{
+											"key": "Cache-Control",
+											"value": "no-cache, private"
+										},
+										{
+											"key": "Date",
+											"value": "Mon, 11 Aug 2025 21:16:20 GMT"
+										},
+										{
+											"key": "Content-Type",
+											"value": "application/json"
+										},
+										{
+											"key": "Access-Control-Allow-Origin",
+											"value": "*"
+										}
+									],
+									"cookie": [],
+									"body": "{\n    \"message\": \"Consulta realizada com sucesso!\",\n    \"data\": {\n        \"error\": false,\n        \"message\": \"Requisição processada com sucesso\",\n        \"balance\": \"177,150\",\n        \"response\": {\n            \"codigo\": \"OK\",\n            \"descricao\": \"Message sent successfully\",\n            \"id_sms\": [\n                \"2b356311add8d9bf6d300c778f4681b38623565b\"\n            ]\n        },\n        \"tax\": \"0,100\",\n        \"api_limit_for\": \"credit\"\n    }\n}"
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "APIs Planos",
+					"item": [
+						{
+							"name": "Cep-IBGE-Plano",
+							"item": [
+								{
+									"name": "Cep-IBGE",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-CEP-IBGE}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n\"cep\":\"31585230\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/cep/cep",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"cep",
+												"cep"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "CEP-Cidades",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-CEP-IBGE}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"uf\":\"AM\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/cep/cidades",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"cep",
+												"cidades"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "cidadesPorDDD",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-CEP-IBGE}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"ddd\":\"21\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/cep/cidadesPorDDD",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"cep",
+												"cidadesPorDDD"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "estados",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-CEP-IBGE}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"pais\":\"BR\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/cep/estados",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"cep",
+												"estados"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Bairros",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-CEP-IBGE}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"cidade\":\"São Paulo\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/cep/bairros",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"cep",
+												"bairros"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Distancia CEPs",
+							"item": [
+								{
+									"name": "Distance",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-DistanciaCep}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"mode\":\"driving\",\r\n    \"origin\":\"32146057\",\r\n    \"destination\":\"31585230\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/geomatrix",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"geomatrix"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "DDD anatel",
+							"item": [
+								{
+									"name": "DDD",
+									"protocolProfileBehavior": {
+										"disableBodyPruning": true
+									},
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-DDD-Anatel}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/ddd/ddd",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"ddd",
+												"ddd"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "DDD estado",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-DDD-Anatel}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"state\":\"MG\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/ddd/ddd",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"ddd",
+												"ddd"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "DDD por cidade",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-DDD-Anatel}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"city\":\"Belo Horizonte\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/ddd/ddd",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"ddd",
+												"ddd"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Dados por DDD",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-DDD-Anatel}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"ddd\":\"31\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/ddd/ddd",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"ddd",
+												"ddd"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Clima",
+							"item": [
+								{
+									"name": "Cidade",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-clima}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"city\": \"Belo Horizonte, Minas gerais\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/weather/city",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"weather",
+												"city"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Coordenada",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-clima}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"lat\": \"-19.8218131\",\r\n    \"lon\": \"-44.0094874\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/weather/coordenates",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"weather",
+												"coordenates"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "whatsapp",
+							"item": [
+								{
+									"name": "SendText",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "15ee9ef7-9044-428c-a7fb-5b9f6767ce67",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"session\": \"teste\",\r\n    \"number\":\"5531983279368\",\r\n    \"text\":\"Top, APIGRATIS! Que massa.\",\r\n    \"time_typing\":1000\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/whatsapp/sendText",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"whatsapp",
+												"sendText"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "SendFile",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "15ee9ef7-9044-428c-a7fb-5b9f6767ce67",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"number\":\"5531983254877\",\r\n    \"path\":\"https://app.apibrasil.io/frontend/img/logo.png\",\r\n    \"caption\":\"Integração com APIBrasil concluída com sucesso\",\r\n    \"createChat\":true,\r\n    \"filename\":\"APIBRASIL-logo\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/whatsapp/sendFile",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"whatsapp",
+												"sendFile"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "sendFile64",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "15ee9ef7-9044-428c-a7fb-5b9f6767ce67",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"number\":\"5531983254877\",\r\n     \"path\": \"data:image/png;base64,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\",\r\n    \"caption\": \"Integração com APIBrasil concluída com sucesso!\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/whatsapp/sendFile64",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"whatsapp",
+												"sendFile64"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "sendVideo",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "15ee9ef7-9044-428c-a7fb-5b9f6767ce67",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"number\": \"5531994359434\",\r\n    \"path\": \"https://filesamples.com/samples/video/mp4/sample_960x540.mp4\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/whatsapp/sendVideo",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"whatsapp",
+												"sendVideo"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "sendImages",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "15ee9ef7-9044-428c-a7fb-5b9f6767ce67",
+												"type": "text"
+											},
+											{
+												"key": "",
+												"value": "",
+												"type": "text",
+												"disabled": true
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"number\": \"5531983254877\",\r\n    \"path\": \"https://unsplash.com/pt-br/fotografias/NGiowDPY31Y\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/whatsapp/sendImages",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"whatsapp",
+												"sendImages"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Translate",
+							"item": [
+								{
+									"name": "Models",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-Translate}}",
+												"type": "text"
+											}
+										],
+										"url": {
+											"raw": "{{HOST}}/api/translate/models",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"translate",
+												"models"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "translate",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-Translate}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"from\":\"en\",\r\n    \"to\":\"pt\",\r\n    \"text\":\"Welcome it my text first translated\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/translate",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"translate"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Identify",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-Translate}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"text\":\"Language translator translates text from one language to another\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/translate/identify",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"translate",
+												"identify"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "DATABASE IP",
+							"item": [
+								{
+									"name": "Database IP",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-database}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"ip\":\"127.0.0.0\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/database/ip",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"database",
+												"ip"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Geolocation",
+							"item": [
+								{
+									"name": "Ip",
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{BEARER_TOKEN}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "POST",
+										"header": [
+											{
+												"key": "DeviceToken",
+												"value": "{{DeviceToken-geolocation}}",
+												"type": "text"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\r\n    \"query\":\"115 Rua Afonso Pena Belo Horizonte, Minas Gerais\"\r\n}",
+											"options": {
+												"raw": {
+													"language": "json"
+												}
+											}
+										},
+										"url": {
+											"raw": "{{HOST}}/api/geolocation/ip",
+											"host": [
+												"{{HOST}}"
+											],
+											"path": [
+												"api",
+												"geolocation",
+												"ip"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Profile",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/profile",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Atualizar perfil",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer 01988b2b-d619-71e3-bf62-ab38030c7f6e|8Dt6dAtBOjZs3QqIOmdDchJk4xEViiB5GCDzDJR3ee2a8cfc",
+								"description": "Token de autentificaçao",
+								"type": "text",
+								"disabled": true
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Artur Umelino Vieira\",\r\n    \"email\": \"artur@teste.com\",\r\n    \"password\": \"finaltest2\",\r\n    \"bearer_apibrasil\": \"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL2dhdGV3YXkuYXBpYnJhc2lsLmlvL2FwaS92Mi9hdXRoL3JlZ2lzdGVyIiwiaWF0IjoxNzU0MzIyOTE4LCJleHAiOjE3ODU4NTg5MTgsIm5iZiI6MTc1NDMyMjkxOCwianRpIjoiZjB4bGtGcFlTT0tLYzhqNiIsInN1YiI6IjE2MzYyIiwicHJ2IjoiMjNiZDVjODk0OWY2MDBhZGIzOWU3MDFjNDAwODcyZGI3YTU5NzZmNyJ9.429bragy3HIrbMWgbC-ba9o3go9HBx5RcbGhyO7DOuI\",\r\n    \"cellphone\" : \"999234721\"\r\n\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{HOST}}/api/users/0198ce78-b347-705b-92d5-1705a135a4b0",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"0198ce78-b347-705b-92d5-1705a135a4b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Listatransaçoes",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/transactions",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"transactions"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Prices",
+					"item": [
+						{
+							"name": "Create Price",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"geolocation\",\r\n    \"value_buy\": 1.50,\r\n    \"value_sell\": 12.50\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/prices",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"prices"
+									]
+								},
+								"description": "## Add Price\n\nThis endpoint allows users to add a new price entry to the system. The request must include specific parameters that define the price details.\n\n### Request Parameters\n\nThe request body should be in JSON format and must include the following fields:\n\n- **name** (string): The identifier for the price entry (e.g., \"cnpj\").\n    \n- **value_buy** (number): The buying price associated with the identifier.\n    \n- **value_sell** (number): The selling price associated with the identifier.\n    \n\n### Example Request Body\n\n``` json\n{\n  \"name\": \"cnpj\",\n  \"value_buy\": 1.5,\n  \"value_sell\": 2\n}\n\n ```\n\n### Response Structure\n\nUpon successful addition of the price, the server will respond with a confirmation message and the details of the newly created price entry. The response will typically include:\n\n- **status** (string): The status of the request (e.g., \"success\").\n    \n- **data** (object): An object containing the details of the added price entry, which may include the same fields as the request.\n    \n\n### Example Response\n\n``` json\n{\n  \"status\": \"success\",\n  \"data\": {\n    \"name\": \"cnpj\",\n    \"value_buy\": 1.5,\n    \"value_sell\": 2\n  }\n}\n\n ```\n\nEnsure that all required fields are included in the request to avoid errors."
+							},
+							"response": []
+						},
+						{
+							"name": "List Prince All",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/prices",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"prices"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Update price",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"name\": \"geomatrix\",\r\n    \"value_buy\": 1.60,\r\n    \"value_sell\": 2.10\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/prices/0198be75-bee3-713c-afe8-b3c421acc5cf",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"prices",
+										"0198be75-bee3-713c-afe8-b3c421acc5cf"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Delete Price",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/prices/0c65d2f3-f224-418f-a52d-92b247fcf3ed",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"prices",
+										"0c65d2f3-f224-418f-a52d-92b247fcf3ed"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add balance",
+					"item": [
+						{
+							"name": "Adicionar saldo na propia conta",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Authorization",
+										"value": "Bearer 01988b2b-d619-71e3-bf62-ab38030c7f6e|8Dt6dAtBOjZs3QqIOmdDchJk4xEViiB5GCDzDJR3ee2a8cfc",
+										"description": "Token de autentificaçao",
+										"type": "text",
+										"disabled": true
+									},
+									{
+										"key": "Accept",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"amount\": 20000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/add-balance",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"add-balance"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Adicionar saldo no usuario",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"amount\": 100.00\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/users/0198c95f-319a-7256-bc74-9892feb23a6b/add-balance",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"users",
+										"0198c95f-319a-7256-bc74-9892feb23a6b",
+										"add-balance"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "makeadmin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/users/0198ce79-52b5-7330-8b5e-4069ae8de182/make-admin",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"users",
+								"0198ce79-52b5-7330-8b5e-4069ae8de182",
+								"make-admin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete users",
+					"request": {
+						"method": "GET",
+						"header": []
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Plataforma",
+			"item": [
+				{
+					"name": "DIspositivos",
+					"item": [
+						{
+							"name": "Cadastrar Dispositivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "SecretKey",
+										"value": "48f86f3f-031f-4e97-8904-754a1b8ba2b0",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"type\":\"computer\",\r\n    \"device_name\":\"test\",\r\n    \"device_key\":\"1234\",\r\n    \"device_ip\":\"0.0.0.0\",\r\n    //\"server_search\":\"341d6f36-b888-41b1-b0a6-e95aab5fe018\", apenas para wpp ou baileys\r\n    \"webhook_wh_message\":\"\",\r\n    \"webhook_wh_status\":\"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/devices/store",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"devices",
+										"store"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Listar Dispositvos",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/devices",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"devices"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Atualizar Dispositivo",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "SecretKey",
+										"value": "48f86f3f-031f-4e97-8904-754a1b8ba2b0",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"device_token\": \"e5f622e2-4b1a-4353-b75b-232327d8d5fa\",\r\n    \"search\": \"bd660449-e43e-4148-8fe3-006b17a4317f\",\r\n    \"server_search\": \"abc5ahVANZdhr6a6z9a26JVu5Ii1080Za2\",\r\n    \"type\": \"cellphone\",\r\n    \"device_name\" : \"Arturatt\",\r\n    \"device_key\": \"1234\",\r\n    \"device_ip\": \"0.0.0.0\",\r\n    \"webhook_wh_message\":\"\",\r\n    \"webhook_wh_status\":\"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/devices/search",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"devices",
+										"search"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Deletar",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{BEARER_TOKEN}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "SecretKey",
+										"value": "48f86f3f-031f-4e97-8904-754a1b8ba2b0",
+										"type": "text"
+									},
+									{
+										"key": "Authorization",
+										"value": "",
+										"type": "text",
+										"disabled": true
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"search\": \"bd660449-e43e-4148-8fe3-006b17a4317f\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{HOST}}/api/devices/destroy",
+									"host": [
+										"{{HOST}}"
+									],
+									"path": [
+										"api",
+										"devices",
+										"destroy"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Lista servidores",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "DeviceToken",
+								"value": "{{DeviceToken-geolocation}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"query\":\"115 Rua Afonso Pena Belo Horizonte, Minas Gerais\"\r\n}"
+						},
+						"url": {
+							"raw": "{{HOST}}/api/gateway/servers",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"servers"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Minhas APIs",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{BEARER_TOKEN}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{HOST}}/api/gateway/apis",
+							"host": [
+								"{{HOST}}"
+							],
+							"path": [
+								"api",
+								"gateway",
+								"apis"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST",
+			"value": "http://localhost"
+		},
+		{
+			"key": "BEARER_TOKEN",
+			"value": ""
+		},
+		{
+			"key": "DeviceToken-CEP-IBGE",
+			"value": "15ee9ef7-9044-428c-a7fb-5b9f6767ce67"
+		},
+		{
+			"key": "DeviceToken-DistanciaCep",
+			"value": "524de709-abaf-4bb9-a86c-286a83366205"
+		},
+		{
+			"key": "DeviceToken-DDD-Anatel",
+			"value": "a8f811ce-c4ba-405a-86f7-8dfc1de4b078\t"
+		},
+		{
+			"key": "DeviceToken-Translate",
+			"value": "323fe4d8-eccb-4da4-8dff-700cc5ed06fa\t"
+		},
+		{
+			"key": "DeviceToken-database",
+			"value": "d2a05f86-a741-49f0-95d5-20d2584f5ffd"
+		},
+		{
+			"key": "DeviceToken-clima",
+			"value": "b3c781af-8d18-4be3-8af8-56303a1ef560"
+		},
+		{
+			"key": "DeviceToken-geolocation",
+			"value": "f971398f-397d-40cf-8550-5baaaa79ee9f",
+			"type": "string"
+		}
+	]
+}
